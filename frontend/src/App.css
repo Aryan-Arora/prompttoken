@@ -1,0 +1,112 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fbfbf8;
+  color: #1a1a1a;
+  font-family: -apple-system, Arial, sans-serif;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+header h1 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: 40px;
+  margin: 0;
+}
+
+.subtitle {
+  color: #6a7179;
+  margin: 8px 0 32px;
+}
+
+textarea {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  border: 1px solid #e3e6e4;
+  border-radius: 12px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.tokenizer-picker {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
+.tokenizer-picker label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+button {
+  background: #c9622a;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #d8b39e;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #c92a2a;
+  margin-top: 16px;
+}
+
+.results {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.result-card {
+  background: #ffffff;
+  border: 1px solid #e3e6e4;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.result-card h2 {
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0 0 16px;
+}
+
+.count {
+  font-size: 14px;
+  color: #6a7179;
+  font-weight: 400;
+}
+
+.token-view {
+  line-height: 2.1;
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 14px;
+}
+
+.token {
+  border-radius: 4px;
+  padding: 1px 2px;
+  white-space: pre-wrap;
+}
