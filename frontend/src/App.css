@@ -110,3 +110,123 @@ button:disabled {
   padding: 1px 2px;
   white-space: pre-wrap;
 }
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+button.tab {
+  background: transparent;
+  color: #6a7179;
+  border: 1px solid #e3e6e4;
+}
+
+button.tab.active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+button.secondary {
+  background: #fff;
+  color: #1a1a1a;
+  border: 1px solid #c8ccca;
+}
+
+button.secondary:disabled {
+  color: #a0a5a8;
+  background: #fff;
+}
+
+button.small {
+  padding: 4px 12px;
+  font-size: 13px;
+}
+
+.protect-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+
+.hint {
+  font-size: 14px;
+  color: #6a7179;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.chip {
+  background: #eef3ff;
+  border: 1px solid #b6c8f5;
+  border-radius: 999px;
+  padding: 4px 8px 4px 12px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chip-x {
+  background: transparent;
+  color: #3b5bdb;
+  padding: 0 6px;
+  font-size: 14px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+}
+
+.stat {
+  background: #fff;
+  border: 1px solid #e3e6e4;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #6a7179;
+}
+
+.stat-main {
+  font-size: 20px;
+  margin: 4px 0;
+}
+
+.stat-sub {
+  font-size: 13px;
+  color: #4a5056;
+}
+
+.diff,
+.compressed {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-size: 15px;
+  margin: 0;
+  font-family: inherit;
+}
+
+.seg-removed {
+  background: #ffe3e3;
+  color: #a61e1e;
+  text-decoration: line-through;
+}
+
+.seg-added {
+  background: #d3f9d8;
+  color: #1b6e2b;
+}

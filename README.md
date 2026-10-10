@@ -1,6 +1,6 @@
 # PromptToken Analyzer & Compressor
 
-Week 1 slice: the tokenizer analyzer only (no compression yet).
+Status: Week 1 (tokenizer analyzer) and Week 2 (rule-based compressor with protected spans, diff, and savings report) are built. Model-based pruning and the benchmark are not.
 
 ## Run the backend
 
@@ -30,6 +30,11 @@ Open http://localhost:5173. Paste a prompt, pick tokenizers, hit Analyze.
 - `backend/app/main.py` — `POST /tokenize` endpoint
 - `frontend/src/App.jsx` — prompt box, tokenizer picker, token highlighter
 
-## Next (Week 2)
+- `backend/app/compressor.py` — rule-based compressor (filler removal, near-duplicate sentence removal, whitespace), protected spans, diff segments
+- `backend/app/pricing.py` — illustrative cost rate (placeholder, not a published price)
+- `frontend/src/Compress.jsx` — compress screen: lock spans, diff, savings report
+- Tests: `cd backend && pip install pytest && python -m pytest`
 
-Rule-based compressor + savings report + protected spans.
+## Next (Week 3)
+
+Model-based importance pruning and compression levels, compared against this baseline.

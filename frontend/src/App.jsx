@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Compress from "./Compress.jsx";
 
 const API_URL = "http://localhost:8000";
 
@@ -42,6 +43,7 @@ function TokenHighlighter({ tokens }) {
 }
 
 export default function App() {
+  const [tab, setTab] = useState("analyze");
   const [text, setText] = useState(SAMPLE_PROMPT);
   const [selected, setSelected] = useState(["gpt-4o", "llama"]);
   const [results, setResults] = useState(null);
@@ -80,9 +82,28 @@ export default function App() {
     <div className="app">
       <header>
         <h1>PromptToken Analyzer</h1>
-        <p className="subtitle">See how your prompt tokenizes, side by side.</p>
+        <p className="subtitle">See where your tokens go, then shrink them.</p>
       </header>
 
+      <nav className="tabs">
+        <button
+          className={tab === "analyze" ? "tab active" : "tab"}
+          onClick={() => setTab("analyze")}
+        >
+          Analyze
+        </button>
+        <button
+          className={tab === "compress" ? "tab active" : "tab"}
+          onClick={() => setTab("compress")}
+        >
+          Compress
+        </button>
+      </nav>
+
+      {tab === "compress" ? (
+        <Compress text={text} setText={setText} />
+      ) : (
+        <>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -121,6 +142,8 @@ export default function App() {
             </div>
           ))}
         </div>
+      )}
+        </>
       )}
     </div>
   );
