@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from . import compressor, pricing, tokenizers
+from . import compressor, lint, pricing, risk, tokenizers
 
 app = FastAPI(title="PromptToken Analyzer & Compressor")
 
@@ -40,6 +40,7 @@ def compress(req: CompressRequest):
     start = time.perf_counter()
     result = compressor.compress(req.text, [s.model_dump() for s in req.protected_spans])
     latency_ms = round((time.perf_counter() - start) * 1000, 2)
+    result["lost"] = risk.find_lost(result["compressed"], result["segments"])
 
     counts = {}
     for tokenizer_id in req.tokenizers:
@@ -64,6 +65,15 @@ def compress(req: CompressRequest):
         "price_note": pricing.PRICE_NOTE,
         "usd_per_mtok": pricing.INPUT_USD_PER_MTOK,
     }
+
+
+class LintRequest(BaseModel):
+    text: str
+
+
+@app.post("/lint")
+def lint_prompt(req: LintRequest):
+    return lint.lint(req.text)
 
 
 @app.get("/tokenizers")

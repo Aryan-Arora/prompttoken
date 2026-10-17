@@ -42,6 +42,53 @@ function TokenHighlighter({ tokens }) {
   );
 }
 
+const LINT_LABELS = {
+  whitespace: "Whitespace",
+  long_number: "Long number",
+  long_string: "Long string",
+  emoji: "Emoji",
+  non_latin: "Non-Latin text",
+  filler: "Filler",
+  repeated: "Repeated",
+};
+
+function visible(text) {
+  const t = text.replace(/ /g, "\u00b7").replace(/\t/g, "\u2192").replace(/\n/g, "\u21b5");
+  return t.length > 60 ? t.slice(0, 57) + "..." : t;
+}
+
+function LintPanel({ lint }) {
+  if (lint.flag_count === 0) {
+    return <p className="hint">No expensive patterns found.</p>;
+  }
+  return (
+    <div className="result-card lint">
+      <h2>
+        Expensive patterns
+        <span className="count">
+          {lint.flag_count} found
+          {lint.tokens_wasted_estimate > 0 &&
+            `, about ${lint.tokens_wasted_estimate} ${lint.tokens_wasted_estimate === 1 ? "token" : "tokens"} avoidable`}
+        </span>
+      </h2>
+      <ul className="lint-list">
+        {lint.flags.map((f, i) => (
+          <li key={i}>
+            <span className={`badge badge-${f.kind}`}>{LINT_LABELS[f.kind] || f.kind}</span>
+            <code>{visible(f.text)}</code>
+            <span className="lint-msg">
+              {f.message} ({f.tokens} {f.tokens === 1 ? "token" : "tokens"}
+              {f.wasted ? `, ${f.wasted} avoidable` : ""})
+            </span>
+          </li>
+        ))}
+      </ul>
+      {lint.truncated && <p className="hint">Showing the first {lint.flags.length} flags.</p>}
+      <p className="hint">Counts use the {lint.tokenizer} tokenizer; other tokenizers differ.</p>
+    </div>
+  );
+}
+
 export default function App() {
   const [tab, setTab] = useState("analyze");
   const [text, setText] = useState(SAMPLE_PROMPT);
@@ -49,6 +96,7 @@ export default function App() {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [lint, setLint] = useState(null);
 
   const toggleTokenizer = (id) => {
     setSelected((prev) =>
@@ -71,6 +119,12 @@ export default function App() {
       }
       const data = await res.json();
       setResults(data.results);
+      const lintRes = await fetch(`${API_URL}/lint`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      setLint(lintRes.ok ? await lintRes.json() : null);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -129,6 +183,8 @@ export default function App() {
       </button>
 
       {error && <p className="error">{error}</p>}
+
+      {lint && <LintPanel lint={lint} />}
 
       {results && (
         <div className="results">

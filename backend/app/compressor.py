@@ -59,6 +59,7 @@ def _signature(sentence):
         "set": set(words),
         "neg": {w for w in words if _is_negation(w)},
         "nums": {w for w in words if any(c.isdigit() for c in w)},
+        "names": set(re.findall(r"\b[A-Z][A-Za-z]+\b", sentence)[1:]),
         "n": len(words),
     }
 
@@ -66,9 +67,9 @@ def _signature(sentence):
 def _near_duplicate(a, b):
     if a["n"] < DUP_MIN_WORDS or b["n"] < DUP_MIN_WORDS:
         return False
-    # Never merge sentences that differ in negation or numbers: that is how
-    # compression silently flips meaning.
-    if a["neg"] != b["neg"] or a["nums"] != b["nums"]:
+    # Never merge sentences that differ in negation, numbers, or names: that is
+    # how compression silently flips or loses meaning.
+    if a["neg"] != b["neg"] or a["nums"] != b["nums"] or a["names"] != b["names"]:
         return False
     overlap = len(a["set"] & b["set"]) / min(len(a["set"]), len(b["set"]))
     return overlap >= DUP_CONTAINMENT

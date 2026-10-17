@@ -33,6 +33,8 @@ Open http://localhost:5173. Paste a prompt, pick tokenizers, hit Analyze.
 - `backend/app/compressor.py` — rule-based compressor (filler removal, near-duplicate sentence removal, whitespace), protected spans, diff segments
 - `backend/app/pricing.py` — illustrative cost rate (placeholder, not a published price)
 - `frontend/src/Compress.jsx` — compress screen: lock spans, diff, savings report
+- `backend/app/risk.py`, `backend/app/lint.py` — meaning-risk check and prompt linter (`POST /lint`)
+- `backend/app/benchmark.py` — SQuAD benchmark: `pip install -r requirements-benchmark.txt && python -m app.benchmark --n 200 --seed 0`; results in `backend/results/`
 - Tests: `cd backend && pip install pytest && python -m pytest`
 
 ## Next (Week 3)

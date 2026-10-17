@@ -144,6 +144,26 @@ export default function Compress({ text, setText }) {
             retained is not measured yet; that comes from the Week 4 benchmark.
           </p>
 
+          {result.lost.length > 0 ? (
+            <div className="risk risk-warn">
+              <strong>Meaning-risk check:</strong> {result.lost.length} risky item
+              {result.lost.length === 1 ? "" : "s"} removed and not present anywhere in the
+              compressed prompt.
+              <ul>
+                {result.lost.map((item, i) => (
+                  <li key={i}>
+                    <code>{item.token}</code> ({item.reason})
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div className="risk risk-ok">
+              <strong>Meaning-risk check:</strong> no numbers, names, negations, or constraint
+              words were lost. This is a heuristic, not a guarantee.
+            </div>
+          )}
+
           <div className="result-card">
             <h2>
               Diff
@@ -151,7 +171,11 @@ export default function Compress({ text, setText }) {
             </h2>
             <div className="diff">
               {result.segments.map((s, i) => (
-                <span key={i} className={`seg seg-${s.kind}`}>
+                <span
+                  key={i}
+                  className={`seg seg-${s.kind}${s.risky ? " seg-risky" : ""}`}
+                  title={s.risky ? "Lost: " + s.lost.map((l) => l.token).join(", ") : undefined}
+                >
                   {s.text}
                 </span>
               ))}

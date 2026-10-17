@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "dataset": "rajpurkar/squad",
+    "split": "validation",
+    "n": 200,
+    "seed": 0,
+    "qa_model": "distilbert-base-cased-distilled-squad",
+    "token_counter": "tiktoken o200k_base, question + context",
+    "date": "2026-10-17",
+    "runtime_s": 24.4,
+    "notes": "random_drop_* are blind controls, not proposed methods."
+  },
+  "methods": {
+    "original": {
+      "tokens_saved_pct": 0.0,
+      "f1": 0.8879,
+      "exact_match": 0.8,
+      "quality_retained": 1.0,
+      "quality_retained_ci95": null,
+      "examples_hurt": 0,
+      "worst_examples": []
+    },
+    "rule_based": {
+      "tokens_saved_pct": 0.03,
+      "f1": 0.8859,
+      "exact_match": 0.795,
+      "quality_retained": 0.9977,
+      "quality_retained_ci95": [
+        0.9931,
+        1.0
+      ],
+      "examples_hurt": 1,
+      "worst_examples": [
+        {
+          "question": "What type of income is the vast majority of the population dependent on?",
+          "gold": "wage or salary",
+          "original_answer": "a wage or salary",
+          "method_answer": "income in the form of a wage or salary",
+          "f1_drop": 0.4
+        }
+      ]
+    },
+    "random_drop_20": {
+      "tokens_saved_pct": 18.54,
+      "f1": 0.715,
+      "exact_match": 0.545,
+      "quality_retained": 0.8053,
+      "quality_retained_ci95": [
+        0.745,
+        0.8721
+      ],
+      "examples_hurt": 71,
+      "worst_examples": [
+        {
+          "question": "Who made experimental measurements on a model steam engine?",
+          "gold": "Watt",
+          "original_answer": "Watt",
+          "method_answer": "Joseph Black",
+          "f1_drop": 1.0
+        },
+        {
+          "question": "Which logo was used for the third Doctor Who's last season?",
+          "gold": "The logo from 1973\u201380",
+          "original_answer": "The logo from 1973\u201380",
+          "method_answer": "Eighth Doctor",
+          "f1_drop": 1.0
+        },
+        {
+          "question": "What was the average cost of a 30-second commercial?",
+          "gold": "$5 million",
+          "original_answer": "$5 million",
+          "method_answer": "charged",
+          "f1_drop": 1.0
+        }
+      ]
+    },
+    "random_drop_40": {
+      "tokens_saved_pct": 37.13,
+      "f1": 0.5157,
+      "exact_match": 0.295,
+      "quality_retained": 0.5808,
+      "quality_retained_ci95": [
+        0.5204,
+        0.6461
+      ],
+      "examples_hurt": 119,
+      "worst_examples": [
+        {
+          "question": "Where were the Kikuyu people located?",
+          "gold": "The central highlands",
+          "original_answer": "The central highlands",
+          "method_answer": "Kenya",
+          "f1_drop": 1.0
+        },
+        {
+          "question": "In what part of the United States did many students migrate to Christian academies during the desegregation period?",
+          "gold": "South",
+          "original_answer": "South",
+          "method_answer": "Mississippi",
+          "f1_drop": 1.0
+        },
+        {
+          "question": "Barro found there is little relation between income inequality and rates of what?",
+          "gold": "growth and investment",
+          "original_answer": "growth and investment",
+          "method_answer": "According",
+          "f1_drop": 1.0
+        }
+      ]
+    },
+    "random_drop_60": {
+      "tokens_saved_pct": 55.73,
+      "f1": 0.3257,
+      "exact_match": 0.145,
+      "quality_retained": 0.3668,
+      "quality_retained_ci95": [
+        0.3111,
+        0.4267
+      ],
+      "examples_hurt": 150,
+      "worst_examples": [
+        {
+          "question": "What is sometimes but not always counted regarding Durinskia's chloroplast membranes?",
+          "gold": "the entire diatom endosymbiont as the chloroplast",
+          "original_answer": "entire diatom endosymbiont",
+          "method_answer": "reduction",
+          "f1_drop": 1.0
+        },
+        {
+          "question": "What are the anitmicrobial peptides secreted by the skin called?",
+          "gold": "\u03b2-defensins",
+          "original_answer": "\u03b2-defensins",
+          "method_answer": "antimicrobial",
+          "f1_drop": 1.0
+        },
+        {
+          "question": "Which river joins the Rhine in Duisburg?",
+          "gold": "Ruhr",
+          "original_answer": "The Ruhr",
+          "method_answer": "rivers",
+          "f1_drop": 1.0
+        }
+      ]
+    }
+  }
+}

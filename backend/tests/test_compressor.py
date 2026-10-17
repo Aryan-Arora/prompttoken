@@ -71,3 +71,9 @@ def test_segments_reconstruct_both_sides():
     compressed = "".join(s["text"] for s in res["segments"] if s["kind"] in ("kept", "added"))
     assert original == SAMPLE
     assert compressed == res["compressed"]
+
+
+def test_names_difference_is_not_deduplicated():
+    text = "Ask Alvarez about the report details today. Ask Bernard about the report details today."
+    out = compress(text)["compressed"]
+    assert "Alvarez" in out and "Bernard" in out
