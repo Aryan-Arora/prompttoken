@@ -1,0 +1,496 @@
+{
+  "meta": {
+    "task": "squad",
+    "dataset": "rajpurkar/squad",
+    "n": 200,
+    "seed": 0,
+    "metric": "F1",
+    "answer_model": "deepset/roberta-base-squad2",
+    "scorer_lm": "distilgpt2 (lm_* methods)",
+    "token_counter": "tiktoken o200k_base, question + context",
+    "date": "2026-10-17",
+    "runtime_s": 174.2,
+    "notes": "random_drop_* are blind controls. lm_safe_* never drop numbers, names, negations, or constraint words. query_sentence_* uses the question."
+  },
+  "methods": {
+    "original": {
+      "family": "original",
+      "tokens_saved_pct": 0.0,
+      "score": 0.9227,
+      "exact_match": 0.86,
+      "quality_retained": 1.0,
+      "quality_retained_ci95": null,
+      "examples_hurt": 0,
+      "worst_examples": []
+    },
+    "rule_based": {
+      "family": "rule_based",
+      "tokens_saved_pct": 0.03,
+      "score": 0.9227,
+      "exact_match": 0.86,
+      "quality_retained": 1.0,
+      "quality_retained_ci95": [
+        1.0,
+        1.0
+      ],
+      "examples_hurt": 0,
+      "worst_examples": []
+    },
+    "query_sentence_light": {
+      "family": "query_sentence",
+      "tokens_saved_pct": 13.19,
+      "score": 0.8849,
+      "exact_match": 0.825,
+      "quality_retained": 0.9591,
+      "quality_retained_ci95": [
+        0.9266,
+        0.9883
+      ],
+      "examples_hurt": 11,
+      "worst_examples": [
+        {
+          "question": "What medical treatment is used to increase oxygen uptake in a patient?",
+          "gold": "oxygen supplementation",
+          "original_answer": "oxygen supplementation",
+          "method_answer": "O\nTreatment",
+          "compressed_text": "Uptake of O\nTreatment not only increases oxygen levels in the patient's blood, but has the secondary effect of decreasing resistance to blood flow in many types of diseased lungs, easing work load on the heart. Oxygen therapy is used to treat emphysema, pneumonia, some heart disorders (congestive heart failure), some disorders that cause increased pulmonary artery pressure, and any disease that impairs the body's ability to take up and use gaseous oxygen.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What is a major importance of Southern California in relation to California and the United States?",
+          "gold": "economic center",
+          "original_answer": "economic center",
+          "method_answer": "geographic and cultural",
+          "compressed_text": "Southern California, often abbreviated SoCal, is a geographic and cultural region that generally comprises California's southernmost 10 counties. The region is traditionally described as \"eight counties\", based on demographics and economic ties: Imperial, Los Angeles, Orange, Riverside, San Bernardino, San Diego, Santa Barbara, and Ventura. The more extensive 10-county definition, including Kern and San Luis Obispo counties, is also used based on historical political divisions.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What health issue did Tesla suffer?",
+          "gold": "nervous breakdown",
+          "original_answer": "nervous breakdown",
+          "method_answer": "drowned in the Mur River",
+          "compressed_text": "In December 1878, Tesla left Graz and severed all relations with his family to hide the fact that he dropped out of school. His friends thought that he had drowned in the Mur River. Tesla went to Maribor (now in Slovenia), where he worked as a draftsman for 60 florins a month. He spent his spare time playing cards with local men on the streets. In March 1879, Milutin Tesla went to Maribor to beg his son to return home, but Nikola refused.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_light": {
+      "family": "lm",
+      "tokens_saved_pct": 15.3,
+      "score": 0.8554,
+      "exact_match": 0.685,
+      "quality_retained": 0.9271,
+      "quality_retained_ci95": [
+        0.8839,
+        0.9632
+      ],
+      "examples_hurt": 47,
+      "worst_examples": [
+        {
+          "question": "BQP and QMA are examples of complexity classes most commonly associated with what type of Turing machine?",
+          "gold": "quantum",
+          "original_answer": "quantum",
+          "method_answer": "probabilistic",
+          "compressed_text": "Other important complexity classes include BPP, ZPP and RP, which defined using probabilistic Turing machines; AC and NC, defined Boolean circuits; BQP and QMA, quantum Turing #P is an important complexity of counting problems (not decision problems). Classes like IP and AM are defined Interactive proof systems. ALL is the class all decision problems.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Who kidnapped Tem\u00fcjin's first wife soon after they were married?",
+          "gold": "the Merkits",
+          "original_answer": "Merkits",
+          "method_answer": "Toghrul Khan",
+          "compressed_text": "As previously arranged by his father, Tem\u00fcjin married B\u00f6rte of the Onggirat tribe when around 16 in order cement alliances between their respective Soon B\u00f6rte's marriage to Tem\u00fcjin, she was kidnapped Merkits and reportedly given away as wife. Tem\u00fcjin rescued with his friend and future rival, Jamukha, his protector, Toghrul Khan of Keraite She gave birth son, Jochi (1185\u20131226), nine later, clouding issue his parentage. Despite speculation over Jochi, B\u00f6rte would be Tem\u00fcjin's only empress, though did follow tradition by taking several morganatic wives.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What kind of economy did northern California start to grow in the 2000s?",
+          "gold": "tech-oriented",
+          "original_answer": "tech-oriented",
+          "method_answer": "tech",
+          "compressed_text": "As of the 2010 United Census, southern California has a population 22,680,010. Despite a reputation high growth rates, southern California's rate grew less the state of 10.0% in the 2000s as California's growth became concentrated the northern part due a stronger, tech-oriented in Bay and an emerging Greater Sacramento region.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_safe_light": {
+      "family": "lm_safe",
+      "tokens_saved_pct": 15.01,
+      "score": 0.8822,
+      "exact_match": 0.725,
+      "quality_retained": 0.9561,
+      "quality_retained_ci95": [
+        0.922,
+        0.9863
+      ],
+      "examples_hurt": 37,
+      "worst_examples": [
+        {
+          "question": "BQP and QMA are examples of complexity classes most commonly associated with what type of Turing machine?",
+          "gold": "quantum",
+          "original_answer": "quantum",
+          "method_answer": "probabilistic",
+          "compressed_text": "Other important complexity classes include BPP, ZPP and RP, which defined using probabilistic Turing machines; AC and NC, defined Boolean circuits; BQP and QMA, quantum Turing #P is an important complexity of counting problems (not decision problems). Classes like IP and AM are defined Interactive proof systems. ALL is the class all decision problems.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Who kidnapped Tem\u00fcjin's first wife soon after they were married?",
+          "gold": "the Merkits",
+          "original_answer": "Merkits",
+          "method_answer": "Toghrul Khan",
+          "compressed_text": "As previously arranged by his father, Tem\u00fcjin married B\u00f6rte of the Onggirat tribe when around 16 in order cement alliances between their respective Soon B\u00f6rte's marriage to Tem\u00fcjin, she was kidnapped Merkits and reportedly given away as wife. Tem\u00fcjin rescued with his friend and future rival, Jamukha, his protector, Toghrul Khan of Keraite She gave birth son, Jochi (1185\u20131226), nine later, clouding issue his parentage. Despite speculation over Jochi, B\u00f6rte would be Tem\u00fcjin's only empress, though did follow tradition by taking several morganatic wives.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What actually causes rigidity in matter?",
+          "gold": "the Pauli exclusion principle",
+          "original_answer": "Pauli exclusion principle",
+          "method_answer": "electromagnetic force",
+          "compressed_text": "It is a common misconception to ascribe the stiffness and rigidity solid matter the repulsion like charges under the influence the electromagnetic force. However, these characteristics actually result Pauli exclusion principle.[citation Since electrons fermions, they cannot occupy same quantum mechanical state other electrons. When the electrons in a material densely together, there are not enough lower energy quantum mechanical for them all, so some of them must in higher states. This means it takes energy pack them together. While this effect manifested macroscopically as a structural force,",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "random_drop_light": {
+      "family": "random_drop",
+      "tokens_saved_pct": 18.54,
+      "score": 0.7485,
+      "exact_match": 0.54,
+      "quality_retained": 0.8112,
+      "quality_retained_ci95": [
+        0.7591,
+        0.857
+      ],
+      "examples_hurt": 78,
+      "worst_examples": [
+        {
+          "question": "Barro found there is little relation between income inequality and rates of what?",
+          "gold": "growth and investment",
+          "original_answer": "growth and investment",
+          "method_answer": "to work",
+          "compressed_text": "Research by Harvard economist Robert Barro, found that there \"little overall relation between income inequality and rates of and to work by Barro in 1999 and levels of inequality reduce growth in relatively poor countries but encourage growth countries. study of Swedish counties between 1960 2000 impact of inequality on lead times of five years or less, but no after ten Studies of data sets have no correlations for any fixed lead time, and a negative impact on the duration of",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Who made experimental measurements on a model steam engine?",
+          "gold": "Watt",
+          "original_answer": "Watt",
+          "method_answer": "Black",
+          "compressed_text": "The contributed to the development of theory; however, the only applications of scientific that influenced the steam engine were the original harnessing the of steam and atmospheric pressure and knowledge of properties of and measurements made Watt on a model steam engine led to the development of the condenser. independently discovered latent heat, which was confirmed by the original discoverer Black, who also advised Watt on experimental Watt was also of the change in the boiling of water with pressure. Otherwise, the improvements the engine itself were more mechanical The thermodynamic conc",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What time period did the geoglyphs date back to?",
+          "gold": "AD 0\u20131250",
+          "original_answer": "AD 0\u20131250",
+          "method_answer": "Pre-Columbian",
+          "compressed_text": "The first European to the length of the Amazon River was Francisco de Orellana in 1542. The BBC's Unnatural Histories presents evidence that than his claims as previously thought, was correct in observations civilization was flourishing along the Amazon in the It is that the civilization was later devastated the spread of diseases from such smallpox. Since the 1970s, numerous geoglyphs have discovered deforested land AD 0\u20131250, furthering claims about Pre-Columbian civilizations. Dias is accredited with first discovering the and Alceu Ranzi with furthering their discovery after flying over Acr",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "query_sentence_medium": {
+      "family": "query_sentence",
+      "tokens_saved_pct": 30.76,
+      "score": 0.8413,
+      "exact_match": 0.785,
+      "quality_retained": 0.9118,
+      "quality_retained_ci95": [
+        0.8656,
+        0.9579
+      ],
+      "examples_hurt": 21,
+      "worst_examples": [
+        {
+          "question": "What is the name of the border to the south?",
+          "gold": "Mexico\u2013United States border",
+          "original_answer": "Mexico\u2013United States border",
+          "method_answer": "Arizona, and the Mojave Desert",
+          "compressed_text": "To the east is the Colorado Desert and the Colorado River at the border with Arizona, and the Mojave Desert at the border with the state of Nevada.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What color are the numbers in the Super Bowl 50 logo? ",
+          "gold": "gold",
+          "original_answer": "gold",
+          "method_answer": "Arabic",
+          "compressed_text": "On June 4, 2014, the NFL announced that the practice of branding Super Bowl games with Roman numerals, a practice established at Super Bowl V, would be temporarily suspended, and that the game would be named using Arabic numerals as Super Bowl 50 as opposed to Super Bowl L. Jaime Weston, the league's vice president of brand and creative, explained that a primary reason for the change was the difficulty of designing an aesthetically pleasing logo with the letter \"L\" using the standardized logo template introduced at Super Bowl XLV.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What was the entity that stepped in and caused Miami's Sun Life Stadium to no longer be in the running to host Super Bowl 50?",
+          "gold": "Florida legislature",
+          "original_answer": "Florida legislature",
+          "method_answer": "Levi's Stadium. The South Florida/Miami area has previously hosted the event 10 times (tied for most with New Orleans",
+          "compressed_text": "The league announced on October 16, 2012, that the two finalists were Sun Life Stadium and Levi's Stadium. The South Florida/Miami area has previously hosted the event 10 times (tied for most with New Orleans), with the most recent one being Super Bowl XLIV in 2010. The San Francisco Bay Area last hosted in 1985 (Super Bowl XIX), held at Stanford Stadium in Stanford, California, won by the home team 49ers.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_medium": {
+      "family": "lm",
+      "tokens_saved_pct": 31.47,
+      "score": 0.7517,
+      "exact_match": 0.535,
+      "quality_retained": 0.8147,
+      "quality_retained_ci95": [
+        0.7625,
+        0.8616
+      ],
+      "examples_hurt": 76,
+      "worst_examples": [
+        {
+          "question": "BQP and QMA are examples of complexity classes most commonly associated with what type of Turing machine?",
+          "gold": "quantum",
+          "original_answer": "quantum",
+          "method_answer": "probabilistic",
+          "compressed_text": "Other important complexity classes BPP, ZPP RP, defined probabilistic Turing machines; AC and NC, Boolean circuits; BQP QMA, quantum Turing #P is complexity counting problems (not decision problems). Classes IP AM Interactive proof systems. ALL is the class all decision",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Who kidnapped Tem\u00fcjin's first wife soon after they were married?",
+          "gold": "the Merkits",
+          "original_answer": "Merkits",
+          "method_answer": "B\u00f6rte",
+          "compressed_text": "As previously arranged his Tem\u00fcjin married B\u00f6rte of Onggirat tribe when around 16 in order cement alliances their respective Soon B\u00f6rte's she kidnapped Merkits reportedly given wife. rescued with friend future rival, Jamukha, his protector, Toghrul Khan of Keraite She gave Jochi (1185\u20131226), nine clouding issue parentage. Despite speculation over Jochi, B\u00f6rte would be Tem\u00fcjin's empress, though follow tradition taking several morganatic wives.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What is the metric they use to determine how busy airports are?",
+          "gold": "passenger volume",
+          "original_answer": "passenger volume",
+          "method_answer": "traffic",
+          "compressed_text": "Southern California is home Los International second-busiest United by passenger (see World's busiest airports by traffic) third by international Busiest in international traffic); San the busiest single runway airport world; Van Airport, the world's general airport; major commercial at Orange Bakersfield, Ontario, Burbank and Long numerous smaller commercial and general airports.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_safe_medium": {
+      "family": "lm_safe",
+      "tokens_saved_pct": 30.54,
+      "score": 0.7795,
+      "exact_match": 0.555,
+      "quality_retained": 0.8449,
+      "quality_retained_ci95": [
+        0.7967,
+        0.8884
+      ],
+      "examples_hurt": 71,
+      "worst_examples": [
+        {
+          "question": "BQP and QMA are examples of complexity classes most commonly associated with what type of Turing machine?",
+          "gold": "quantum",
+          "original_answer": "quantum",
+          "method_answer": "probabilistic",
+          "compressed_text": "Other important complexity classes BPP, ZPP RP, defined probabilistic Turing machines; AC and NC, Boolean circuits; BQP QMA, quantum Turing #P is complexity counting problems (not decision problems). Classes IP AM Interactive proof systems. ALL is the class all decision",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Who kidnapped Tem\u00fcjin's first wife soon after they were married?",
+          "gold": "the Merkits",
+          "original_answer": "Merkits",
+          "method_answer": "Jamukha",
+          "compressed_text": "As previously arranged his Tem\u00fcjin married B\u00f6rte of Onggirat tribe when around 16 in order cement alliances their respective Soon B\u00f6rte's Tem\u00fcjin, she kidnapped Merkits reportedly given wife. Tem\u00fcjin rescued with friend future rival, Jamukha, his protector, Toghrul Khan Keraite She gave Jochi (1185\u20131226), nine clouding issue parentage. Despite speculation Jochi, B\u00f6rte would Tem\u00fcjin's only empress, though follow tradition taking several morganatic wives.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What is the metric they use to determine how busy airports are?",
+          "gold": "passenger volume",
+          "original_answer": "passenger volume",
+          "method_answer": "traffic",
+          "compressed_text": "Southern California Los Angeles International Airport, second-busiest airport United States by (see World's busiest by traffic) by international Busiest United States international traffic); San Diego International Airport the busiest single runway airport Van Nuys Airport, world's busiest general airport; major commercial at Orange County, Bakersfield, Ontario, Burbank Long Beach; numerous general",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "random_drop_medium": {
+      "family": "random_drop",
+      "tokens_saved_pct": 36.88,
+      "score": 0.5229,
+      "exact_match": 0.295,
+      "quality_retained": 0.5667,
+      "quality_retained_ci95": [
+        0.5065,
+        0.6237
+      ],
+      "examples_hurt": 126,
+      "worst_examples": [
+        {
+          "question": "Where is the Santa Fe Railroad Depot located?",
+          "gold": "Downtown Fresno",
+          "original_answer": "Downtown Fresno",
+          "method_answer": "Bakersfield-Stockton",
+          "compressed_text": "Passenger rail by The main rail station recently renovated historic Santa Fe in The Bakersfield-Stockton mainlines of the Burlington Fe Railway and Pacific Railroad railroads cross Fresno, and both railyards the city; the Valley Railroad operates branchlines west and south out of city. The Fresno is planned serve California High Speed",
+          "score_drop": 1.0
+        },
+        {
+          "question": "In what part of the United States did many students migrate to Christian academies during the desegregation period?",
+          "gold": "South",
+          "original_answer": "South",
+          "method_answer": "Mississippi",
+          "compressed_text": "In many parts of the after the 1954 decision the court of of demanded desegregate deliberate speed\", a wave of private \"Christian academies\". In much the migrated academies, while public became in turn more heavily with African-American students (see of in Mississippi). The academic content of the academies was usually College Preparatory. 1970s, these academies\" have down, continue to operate.[citation needed]",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Barro found there is little relation between income inequality and rates of what?",
+          "gold": "growth and investment",
+          "original_answer": "growth and investment",
+          "method_answer": "rates",
+          "compressed_text": "Research Harvard economist Robert Barro, that there is \"little overall relation between income and rates According to by Barro 1999 2000, high of reduce growth in relatively countries encourage growth in countries. A study Swedish counties between and found positive of inequality growth lead or less, correlation after years. Studies larger data sets have found correlations for any on duration of",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "query_sentence_aggressive": {
+      "family": "query_sentence",
+      "tokens_saved_pct": 47.78,
+      "score": 0.7897,
+      "exact_match": 0.72,
+      "quality_retained": 0.8559,
+      "quality_retained_ci95": [
+        0.8041,
+        0.9094
+      ],
+      "examples_hurt": 35,
+      "worst_examples": [
+        {
+          "question": "In what part of the United States did many students migrate to Christian academies during the desegregation period?",
+          "gold": "South",
+          "original_answer": "South",
+          "method_answer": "Topeka",
+          "compressed_text": "In many parts of the United States, after the 1954 decision in the landmark court case Brown v. Board of Education of Topeka that demanded United States schools desegregate \"with all deliberate speed\", local families organized a wave of private \"Christian academies\".",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What is the name of the border to the south?",
+          "gold": "Mexico\u2013United States border",
+          "original_answer": "Mexico\u2013United States border",
+          "method_answer": "Arizona, and the Mojave Desert",
+          "compressed_text": "To the east is the Colorado Desert and the Colorado River at the border with Arizona, and the Mojave Desert at the border with the state of Nevada.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What was the average cost of a 30-second commercial?",
+          "gold": "$5 million",
+          "original_answer": "$5 million",
+          "method_answer": "Beyonc\u00e9 and Bruno Mars, who headlined the Super Bowl XLVII and Super Bowl XLVIII halftime shows, respectively.",
+          "compressed_text": "The Super Bowl 50 halftime show was headlined by the British rock group Coldplay with special guest performers Beyonc\u00e9 and Bruno Mars, who headlined the Super Bowl XLVII and Super Bowl XLVIII halftime shows, respectively.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_aggressive": {
+      "family": "lm",
+      "tokens_saved_pct": 48.67,
+      "score": 0.5667,
+      "exact_match": 0.35,
+      "quality_retained": 0.6142,
+      "quality_retained_ci95": [
+        0.5529,
+        0.6729
+      ],
+      "examples_hurt": 118,
+      "worst_examples": [
+        {
+          "question": "When was most of Sunnside developed?",
+          "gold": "1950s through the 1970s",
+          "original_answer": "1950s through the 1970s",
+          "method_answer": "recently",
+          "compressed_text": "neighborhood Sunnyside Fresno's far southeast bounded Chestnut to West. Its major thoroughfares Kings Clovis Although parts within City much \"county island\" within Largely developed through recently Sunnyside Country maintains golf designed William P. Bell.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "In what part of the United States did many students migrate to Christian academies during the desegregation period?",
+          "gold": "South",
+          "original_answer": "South",
+          "method_answer": "Mississippi",
+          "compressed_text": "many after 1954 decision court Brown Topeka demanded United desegregate \"with deliberate speed\", local families organized wave private \"Christian academies\". much white migrated academies, public in turn (see List private Mississippi). academic content usually College Preparatory. Since \"segregation shut operate.[citation",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What direction did Watson say the mistake went in?",
+          "gold": "making it seem like climate change is more serious by overstating the impact",
+          "original_answer": "making it seem like climate change is more serious by overstating the impact",
+          "method_answer": "trend",
+          "compressed_text": "Former IPCC Watson \"The mistakes all appear making more by overstating impact. worrying. trend errors ask happened\". Martin Parry, had co-chair working II, \"What began single unfortunate Himalayan clamour without substance\" investigated other alleged mistakes, \"generally unfounded also marginal to assessment\".",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_safe_aggressive": {
+      "family": "lm_safe",
+      "tokens_saved_pct": 46.72,
+      "score": 0.6268,
+      "exact_match": 0.41,
+      "quality_retained": 0.6794,
+      "quality_retained_ci95": [
+        0.6191,
+        0.7414
+      ],
+      "examples_hurt": 105,
+      "worst_examples": [
+        {
+          "question": "In what part of the United States did many students migrate to Christian academies during the desegregation period?",
+          "gold": "South",
+          "original_answer": "South",
+          "method_answer": "Mississippi",
+          "compressed_text": "United States, after 1954 decision Brown Education Topeka demanded United States \"with deliberate speed\", local families organized wave private \"Christian academies\". much U.S. white migrated academies, public African-American (see List private Mississippi). academic content College Preparatory. 1970s, \"segregation shut operate.[citation",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What direction did Watson say the mistake went in?",
+          "gold": "making it seem like climate change is more serious by overstating the impact",
+          "original_answer": "making it seem like climate change is more serious by overstating the impact",
+          "method_answer": "The IPCC trend",
+          "compressed_text": "Former IPCC Robert Watson \"The mistakes all appear the by overstating the impact. worrying. The IPCC trend the errors happened\". Martin Parry, the IPCC II, \"What began unfortunate Himalayan clamour without substance\" the IPCC investigated the alleged \"generally marginal the assessment\".",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Who made experimental measurements on a model steam engine?",
+          "gold": "Watt",
+          "original_answer": "Watt",
+          "method_answer": "Joseph Black",
+          "compressed_text": "steam contributed thermodynamic theory; only applications scientific influenced steam original harnessing atmospheric knowledge properties experimental measurements Watt on model steam led separate condenser. Watt independently latent confirmed original discoverer Joseph Black, advised Watt procedures. Watt change boiling pressure. Otherwise, improvements engine itself mechanical concepts Rankine cycle give engineers understanding needed efficiency which aided modern high-pressure -temperature",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "random_drop_aggressive": {
+      "family": "random_drop",
+      "tokens_saved_pct": 55.45,
+      "score": 0.3739,
+      "exact_match": 0.215,
+      "quality_retained": 0.4053,
+      "quality_retained_ci95": [
+        0.3424,
+        0.4634
+      ],
+      "examples_hurt": 146,
+      "worst_examples": [
+        {
+          "question": "Where were the Kikuyu people located?",
+          "gold": "The central highlands",
+          "original_answer": "central highlands",
+          "method_answer": "Kenya",
+          "compressed_text": "The highlands were a of the of no land claims European and itinerant farmers. To protect their interests, the the introduced and landless were less land massive the cities as a land dwindled. living Kenya",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What are the anitmicrobial peptides secreted by the skin called?",
+          "gold": "\u03b2-defensins",
+          "original_answer": "\u03b2-defensins",
+          "method_answer": "lysozyme phospholipase milk are antibacterials",
+          "compressed_text": "barriers also protect infection. skin and antimicrobial such lysozyme phospholipase milk are antibacterials. chemical following menarche, become acidic, while semen contains defensins In acid as defenses against ingested pathogens.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Which river joins the Rhine in Duisburg?",
+          "gold": "Ruhr",
+          "original_answer": "The Ruhr",
+          "method_answer": "the in Duisburg, is nowadays clean thanks of environmental transition from heavy industry to measures, such as of Slag",
+          "compressed_text": "Until 1980s, was a source water Although plants and factories found along up along Rhine that the them concentrated, river major home of largest inland port as a of and the in Duisburg, is nowadays clean thanks of environmental transition from heavy industry to measures, such as of Slag and region water. contributes m3/s Ruhr above still a of pollution.",
+          "score_drop": 1.0
+        }
+      ]
+    }
+  }
+}

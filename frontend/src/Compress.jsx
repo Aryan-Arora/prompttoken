@@ -21,6 +21,10 @@ export default function Compress({ text, setText }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [method, setMethod] = useState("rules");
+  const [level, setLevel] = useState("medium");
+  const [keepRisky, setKeepRisky] = useState(true);
+  const [query, setQuery] = useState("");
 
   const onSelect = (e) => {
     setSelection({ start: e.target.selectionStart, end: e.target.selectionEnd });
@@ -49,7 +53,14 @@ export default function Compress({ text, setText }) {
       const res = await fetch(`${API_URL}/compress`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, protected_spans: spans }),
+        body: JSON.stringify({
+          text,
+          protected_spans: spans,
+          method,
+          level,
+          keep_risky: keepRisky,
+          query,
+        }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
@@ -107,8 +118,54 @@ export default function Compress({ text, setText }) {
         </div>
       )}
 
-      <button onClick={compress} disabled={loading || !text.trim()}>
-        {loading ? "Compressing..." : "Compress"}
+      <div className="method-row">
+        <label>
+          Method
+          <select value={method} onChange={(e) => setMethod(e.target.value)}>
+            <option value="rules">Rules (filler, duplicates, whitespace)</option>
+            <option value="lm">Model-based (drop least informative words)</option>
+            <option value="query">Query-aware (keep sentences relevant to a question)</option>
+          </select>
+        </label>
+        {method !== "rules" && (
+          <label>
+            Level
+            <select value={level} onChange={(e) => setLevel(e.target.value)}>
+              <option value="light">Light (about 20% of words)</option>
+              <option value="medium">Medium (about 40%)</option>
+              <option value="aggressive">Aggressive (about 60%)</option>
+            </select>
+          </label>
+        )}
+        {method === "lm" && (
+          <label className="check">
+            <input
+              type="checkbox"
+              checked={keepRisky}
+              onChange={(e) => setKeepRisky(e.target.checked)}
+            />
+            Never drop numbers, names, negations, or constraint words
+          </label>
+        )}
+      </div>
+      {method === "query" && (
+        <input
+          className="query-input"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="The question the compressed text must still answer"
+        />
+      )}
+
+      <button
+        onClick={compress}
+        disabled={loading || !text.trim() || (method === "query" && !query.trim())}
+      >
+        {loading
+          ? method === "lm"
+            ? "Compressing (first run loads the model)..."
+            : "Compressing..."
+          : "Compress"}
       </button>
 
       {error && <p className="error">{error}</p>}

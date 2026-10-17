@@ -1,0 +1,505 @@
+{
+  "meta": {
+    "task": "squad",
+    "dataset": "rajpurkar/squad",
+    "n": 200,
+    "seed": 0,
+    "metric": "F1",
+    "answer_model": "distilbert-base-cased-distilled-squad",
+    "scorer_lm": "distilgpt2 (lm_* methods)",
+    "token_counter": "tiktoken o200k_base, question + context",
+    "date": "2026-10-17",
+    "runtime_s": 104.9,
+    "notes": "random_drop_* are blind controls. lm_safe_* never drop numbers, names, negations, or constraint words. query_sentence_* uses the question."
+  },
+  "methods": {
+    "original": {
+      "family": "original",
+      "tokens_saved_pct": 0.0,
+      "score": 0.8879,
+      "exact_match": 0.8,
+      "quality_retained": 1.0,
+      "quality_retained_ci95": null,
+      "examples_hurt": 0,
+      "worst_examples": []
+    },
+    "rule_based": {
+      "family": "rule_based",
+      "tokens_saved_pct": 0.03,
+      "score": 0.8859,
+      "exact_match": 0.795,
+      "quality_retained": 0.9977,
+      "quality_retained_ci95": [
+        0.9931,
+        1.0
+      ],
+      "examples_hurt": 1,
+      "worst_examples": [
+        {
+          "question": "What type of income is the vast majority of the population dependent on?",
+          "gold": "wage or salary",
+          "original_answer": "a wage or salary",
+          "method_answer": "income in the form of a wage or salary",
+          "compressed_text": "Socialists attribute the vast disparities in wealth to the private ownership of the means of production by a class of owners, creating a situation where a small portion of the population lives off unearned property income by virtue of ownership titles in capital equipment, financial assets and corporate stock. By contrast, the vast majority of the population is dependent on income in the form of a wage or salary. To rectify this situation, socialists argue that the means of production should be socially owned so that income differentials would be reflective of individual contributions to the s",
+          "score_drop": 0.4
+        }
+      ]
+    },
+    "query_sentence_light": {
+      "family": "query_sentence",
+      "tokens_saved_pct": 13.19,
+      "score": 0.8598,
+      "exact_match": 0.785,
+      "quality_retained": 0.9683,
+      "quality_retained_ci95": [
+        0.9285,
+        1.0044
+      ],
+      "examples_hurt": 11,
+      "worst_examples": [
+        {
+          "question": "What medical treatment is used to increase oxygen uptake in a patient?",
+          "gold": "oxygen supplementation",
+          "original_answer": "Oxygen therapy",
+          "method_answer": "O\nTreatment",
+          "compressed_text": "Uptake of O\nTreatment not only increases oxygen levels in the patient's blood, but has the secondary effect of decreasing resistance to blood flow in many types of diseased lungs, easing work load on the heart. Oxygen therapy is used to treat emphysema, pneumonia, some heart disorders (congestive heart failure), some disorders that cause increased pulmonary artery pressure, and any disease that impairs the body's ability to take up and use gaseous oxygen.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What is a major importance of Southern California in relation to California and the United States?",
+          "gold": "economic center",
+          "original_answer": "economic center",
+          "method_answer": "California's southernmost 10 counties",
+          "compressed_text": "Southern California, often abbreviated SoCal, is a geographic and cultural region that generally comprises California's southernmost 10 counties. The region is traditionally described as \"eight counties\", based on demographics and economic ties: Imperial, Los Angeles, Orange, Riverside, San Bernardino, San Diego, Santa Barbara, and Ventura. The more extensive 10-county definition, including Kern and San Luis Obispo counties, is also used based on historical political divisions.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What was Tesla on his way to do when he was struck by the cab?",
+          "gold": "feed the pigeons",
+          "original_answer": "feed the pigeons",
+          "method_answer": "asking to be taken to his hotel via cab. He at once resumed the pigeon-feeding walks",
+          "compressed_text": "In the fall of 1937, after midnight one night, Tesla left the Hotel New Yorker to make his regular commute to the cathedral and the library to feed the pigeons. While crossing a street a couple of blocks from the hotel, Tesla was unable to dodge a moving taxicab and was thrown heavily to the ground. Tesla's back was severely wrenched and three of his ribs were broken in the accident (the full extent of his injuries will never be known; Tesla refused to consult a doctor\u2014an almost lifelong custom). Tesla didn't raise any question as to who was at fault and refused medical aid, only asking to be ",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_light": {
+      "family": "lm",
+      "tokens_saved_pct": 15.3,
+      "score": 0.816,
+      "exact_match": 0.62,
+      "quality_retained": 0.919,
+      "quality_retained_ci95": [
+        0.8786,
+        0.9507
+      ],
+      "examples_hurt": 50,
+      "worst_examples": [
+        {
+          "question": "BQP and QMA are examples of complexity classes most commonly associated with what type of Turing machine?",
+          "gold": "quantum",
+          "original_answer": "quantum",
+          "method_answer": "probabilistic",
+          "compressed_text": "Other important complexity classes include BPP, ZPP and RP, which defined using probabilistic Turing machines; AC and NC, defined Boolean circuits; BQP and QMA, quantum Turing #P is an important complexity of counting problems (not decision problems). Classes like IP and AM are defined Interactive proof systems. ALL is the class all decision problems.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What kind of economy did northern California start to grow in the 2000s?",
+          "gold": "tech-oriented",
+          "original_answer": "tech-oriented",
+          "method_answer": "tech",
+          "compressed_text": "As of the 2010 United Census, southern California has a population 22,680,010. Despite a reputation high growth rates, southern California's rate grew less the state of 10.0% in the 2000s as California's growth became concentrated the northern part due a stronger, tech-oriented in Bay and an emerging Greater Sacramento region.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Where are the rows of combs located?",
+          "gold": "from near the mouth to the opposite end",
+          "original_answer": "near the mouth to the opposite end",
+          "method_answer": "evenly round the body",
+          "compressed_text": "There eight rows combs that run from near mouth to opposite end, are spaced evenly round the body. \"combs\" beat in a metachronal rhythm rather like that Mexican wave. From each balancer in statocyst a ciliary groove runs out under dome and then splits to connect with two adjacent comb rows, and in some species runs all along comb rows. This forms mechanical system for transmitting the beat rhythm from combs balancers, via water disturbances created cilia.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_safe_light": {
+      "family": "lm_safe",
+      "tokens_saved_pct": 15.01,
+      "score": 0.831,
+      "exact_match": 0.655,
+      "quality_retained": 0.9358,
+      "quality_retained_ci95": [
+        0.8962,
+        0.9687
+      ],
+      "examples_hurt": 45,
+      "worst_examples": [
+        {
+          "question": "BQP and QMA are examples of complexity classes most commonly associated with what type of Turing machine?",
+          "gold": "quantum",
+          "original_answer": "quantum",
+          "method_answer": "probabilistic",
+          "compressed_text": "Other important complexity classes include BPP, ZPP and RP, which defined using probabilistic Turing machines; AC and NC, defined Boolean circuits; BQP and QMA, quantum Turing #P is an important complexity of counting problems (not decision problems). Classes like IP and AM are defined Interactive proof systems. ALL is the class all decision problems.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What kind of economy did northern California start to grow in the 2000s?",
+          "gold": "tech-oriented",
+          "original_answer": "tech-oriented",
+          "method_answer": "tech",
+          "compressed_text": "As of the 2010 United States Census, southern California has a 22,680,010. Despite a reputation high growth rates, southern California's rate grew less the state of 10.0% in the 2000s as California's growth became concentrated northern part due a stronger, tech-oriented in Bay Area and an emerging Greater Sacramento region.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Where are the rows of combs located?",
+          "gold": "from near the mouth to the opposite end",
+          "original_answer": "near the mouth to the opposite end",
+          "method_answer": "evenly round the body",
+          "compressed_text": "There eight rows combs that run from near mouth to opposite end, are spaced evenly round the body. \"combs\" beat in a metachronal rhythm rather like that Mexican wave. From each balancer in statocyst a ciliary groove runs out under dome and then splits to connect with two adjacent comb rows, and in some species runs all along comb rows. This forms mechanical system for transmitting the beat rhythm from combs balancers, via water disturbances created cilia.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "random_drop_light": {
+      "family": "random_drop",
+      "tokens_saved_pct": 18.54,
+      "score": 0.718,
+      "exact_match": 0.5,
+      "quality_retained": 0.8086,
+      "quality_retained_ci95": [
+        0.7579,
+        0.8546
+      ],
+      "examples_hurt": 74,
+      "worst_examples": [
+        {
+          "question": "In what year did Tesla go to Budapest?",
+          "gold": "1881",
+          "original_answer": "1881",
+          "method_answer": "Ferenc Pusk\u00e1s",
+          "compressed_text": "In Tesla moved Budapest to work Ferenc Pusk\u00e1s at a company, the Budapest Upon arrival, Tesla realized that the company, under construction, was not functional, so worked as a draftsman in the Central Office Within a few the Budapest Telephone Exchange became functional Tesla was chief electrician position. his employment, Tesla many improvements to the Central Station and claimed to have perfected a telephone repeater or amplifier, which never patented nor publicly described.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "How many people did Hamas kill between 2000 to 2007?",
+          "gold": "542",
+          "original_answer": "542",
+          "method_answer": "140",
+          "compressed_text": "Hamas has continued to a player in Palestine. From 2000 to 2007 killed people in 140 suicide bombing or \"martyrdom In the 2006 legislative election\u2014its first foray into the political process\u2014it the majority of seats, and in 2007 it drove PLO out of Gaza. Hamas has praised by for Israel out the Gaza Strip, criticized to achieve its demands in the and 2014 Gaza Wars despite heavy destruction and significant loss of",
+          "score_drop": 1.0
+        },
+        {
+          "question": "In what year was an early admission program reintroduced?",
+          "gold": "2016",
+          "original_answer": "2016",
+          "method_answer": "2007",
+          "compressed_text": "Undergraduate admission to Harvard is by the as \"more lower transfer-in\". Harvard College 5.3% of applicants for class of 2019, a record low and the acceptance rate among universities. Harvard College ended early program in 2007 as the program was believed to disadvantage low-income and under-represented minority applicants to selective yet for the class of 2016 an Early Action program was",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "query_sentence_medium": {
+      "family": "query_sentence",
+      "tokens_saved_pct": 30.76,
+      "score": 0.8231,
+      "exact_match": 0.755,
+      "quality_retained": 0.9269,
+      "quality_retained_ci95": [
+        0.8797,
+        0.9729
+      ],
+      "examples_hurt": 19,
+      "worst_examples": [
+        {
+          "question": "What is the name of the border to the south?",
+          "gold": "Mexico\u2013United States border",
+          "original_answer": "Mexico\u2013United States border",
+          "method_answer": "Mojave Desert",
+          "compressed_text": "To the east is the Colorado Desert and the Colorado River at the border with Arizona, and the Mojave Desert at the border with the state of Nevada.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What color are the numbers in the Super Bowl 50 logo? ",
+          "gold": "gold",
+          "original_answer": "gold",
+          "method_answer": "Arabic",
+          "compressed_text": "On June 4, 2014, the NFL announced that the practice of branding Super Bowl games with Roman numerals, a practice established at Super Bowl V, would be temporarily suspended, and that the game would be named using Arabic numerals as Super Bowl 50 as opposed to Super Bowl L. Jaime Weston, the league's vice president of brand and creative, explained that a primary reason for the change was the difficulty of designing an aesthetically pleasing logo with the letter \"L\" using the standardized logo template introduced at Super Bowl XLV.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What has risen to be a factor in teaching today?",
+          "gold": "the internet",
+          "original_answer": "the internet",
+          "method_answer": "a course of study and lesson plan that teaches skills, knowledge and/or thinking skills",
+          "compressed_text": "The objective is typically accomplished through either an informal or formal approach to learning, including a course of study and lesson plan that teaches skills, knowledge and/or thinking skills. Different ways to teach are often referred to as pedagogy. When deciding what teaching method to use teachers consider students' background knowledge, environment, and their learning goals as well as standardized curricula as determined by the relevant authority.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_medium": {
+      "family": "lm",
+      "tokens_saved_pct": 31.47,
+      "score": 0.6987,
+      "exact_match": 0.48,
+      "quality_retained": 0.7868,
+      "quality_retained_ci95": [
+        0.7275,
+        0.8455
+      ],
+      "examples_hurt": 82,
+      "worst_examples": [
+        {
+          "question": "Where is British English usually used?",
+          "gold": "in the country",
+          "original_answer": "in the country",
+          "method_answer": "rural",
+          "compressed_text": "Kenya's various ethnic typically speak their mother tongues within communities. two official English Swahili, used varying fluency for communication with populations. English widely commerce, schooling government. Peri-urban and rural dwellers less multilingual, in rural speaking their British English primarily country. Additionally, a distinct local dialect, Kenyan communities and individuals country, contains features unique it that were derived local Bantu languages, Swahili Kikuyu. It developing colonisation also contains certain American English. Sheng is Swahili-based cant spoken some ur",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What music did the fourth soundtrack feature?",
+          "gold": "music from the 2008\u20132010 specials",
+          "original_answer": "2008\u20132010 specials",
+          "method_answer": "\"A Christmas Carol",
+          "compressed_text": "Six soundtrack releases since 2005. featured tracks first series, the and featured music respectively. was 4 October 2010 as two disc special edition and contained music 2008\u20132010 specials (The Next Doctor to End of Part 2). soundtrack for Series 5 8 2010. In February a soundtrack 2010 Christmas special: \"A Christmas Carol\", and in December released, both by Silva Screen Records.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "BQP and QMA are examples of complexity classes most commonly associated with what type of Turing machine?",
+          "gold": "quantum",
+          "original_answer": "quantum",
+          "method_answer": "probabilistic",
+          "compressed_text": "Other important complexity classes BPP, ZPP RP, defined probabilistic Turing machines; AC and NC, Boolean circuits; BQP QMA, quantum Turing #P is complexity counting problems (not decision problems). Classes IP AM Interactive proof systems. ALL is the class all decision",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_safe_medium": {
+      "family": "lm_safe",
+      "tokens_saved_pct": 30.54,
+      "score": 0.7135,
+      "exact_match": 0.475,
+      "quality_retained": 0.8036,
+      "quality_retained_ci95": [
+        0.7543,
+        0.8569
+      ],
+      "examples_hurt": 82,
+      "worst_examples": [
+        {
+          "question": "What is the name of the border to the south?",
+          "gold": "Mexico\u2013United States border",
+          "original_answer": "Mexico\u2013United States border",
+          "method_answer": "Mexico",
+          "compressed_text": "To the east is Colorado Desert and Colorado River at border Arizona, Mojave Desert at the state Nevada. To south Mexico\u2013United States",
+          "score_drop": 1.0
+        },
+        {
+          "question": "BQP and QMA are examples of complexity classes most commonly associated with what type of Turing machine?",
+          "gold": "quantum",
+          "original_answer": "quantum",
+          "method_answer": "probabilistic",
+          "compressed_text": "Other important complexity classes BPP, ZPP RP, defined probabilistic Turing machines; AC and NC, Boolean circuits; BQP QMA, quantum Turing #P is complexity counting problems (not decision problems). Classes IP AM Interactive proof systems. ALL is the class all decision",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Which logo was used for the third Doctor Who's last season?",
+          "gold": "The logo from 1973\u201380",
+          "original_answer": "The logo from 1973\u201380",
+          "method_answer": "First Doctor",
+          "compressed_text": "The original logo the First Doctor (and briefly the Second Doctor) reused slightly format the 50th special \"The Day the Doctor\" during the Eleventh Doctor's run. The the television movie featuring the Eighth Doctor an the the Third Doctor. The from 1973\u201380 the Third Doctor's the majority the Fourth Doctor's tenure. The following logo, while most associated the Fifth Doctor, the Fourth Doctor's The the Ninth Doctor slightly edited the Tenth Doctor, retained the general The the Eleventh Doctor the \"DW\" TARDIS insignia placed to the 2012, the same font remained, edit the texture every episode, th",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "random_drop_medium": {
+      "family": "random_drop",
+      "tokens_saved_pct": 36.88,
+      "score": 0.493,
+      "exact_match": 0.255,
+      "quality_retained": 0.5552,
+      "quality_retained_ci95": [
+        0.4932,
+        0.6196
+      ],
+      "examples_hurt": 132,
+      "worst_examples": [
+        {
+          "question": "Where is the Santa Fe Railroad Depot located?",
+          "gold": "Downtown Fresno",
+          "original_answer": "Downtown Fresno",
+          "method_answer": "Bakersfield-Stockton",
+          "compressed_text": "Passenger rail by The main rail station recently renovated historic Santa Fe in The Bakersfield-Stockton mainlines of the Burlington Fe Railway and Pacific Railroad railroads cross Fresno, and both railyards the city; the Valley Railroad operates branchlines west and south out of city. The Fresno is planned serve California High Speed",
+          "score_drop": 1.0
+        },
+        {
+          "question": "In what part of the United States did many students migrate to Christian academies during the desegregation period?",
+          "gold": "South",
+          "original_answer": "South",
+          "method_answer": "Mississippi",
+          "compressed_text": "In many parts of the after the 1954 decision the court of of demanded desegregate deliberate speed\", a wave of private \"Christian academies\". In much the migrated academies, while public became in turn more heavily with African-American students (see of in Mississippi). The academic content of the academies was usually College Preparatory. 1970s, these academies\" have down, continue to operate.[citation needed]",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Barro found there is little relation between income inequality and rates of what?",
+          "gold": "growth and investment",
+          "original_answer": "growth and investment",
+          "method_answer": "rates",
+          "compressed_text": "Research Harvard economist Robert Barro, that there is \"little overall relation between income and rates According to by Barro 1999 2000, high of reduce growth in relatively countries encourage growth in countries. A study Swedish counties between and found positive of inequality growth lead or less, correlation after years. Studies larger data sets have found correlations for any on duration of",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "query_sentence_aggressive": {
+      "family": "query_sentence",
+      "tokens_saved_pct": 47.78,
+      "score": 0.7547,
+      "exact_match": 0.665,
+      "quality_retained": 0.85,
+      "quality_retained_ci95": [
+        0.7928,
+        0.9061
+      ],
+      "examples_hurt": 39,
+      "worst_examples": [
+        {
+          "question": "Where is the Santa Fe Railroad Depot located?",
+          "gold": "Downtown Fresno",
+          "original_answer": "Downtown Fresno",
+          "method_answer": "Bakersfield-Stockton",
+          "compressed_text": "The Bakersfield-Stockton mainlines of the Burlington Northern Santa Fe Railway and Union Pacific Railroad railroads cross in Fresno, and both railroads maintain railyards within the city; the San Joaquin Valley Railroad also operates former Southern Pacific branchlines heading west and south out of the city.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "In what part of the United States did many students migrate to Christian academies during the desegregation period?",
+          "gold": "South",
+          "original_answer": "South",
+          "method_answer": "In many parts",
+          "compressed_text": "In many parts of the United States, after the 1954 decision in the landmark court case Brown v. Board of Education of Topeka that demanded United States schools desegregate \"with all deliberate speed\", local families organized a wave of private \"Christian academies\".",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What is sometimes but not always counted regarding Durinskia's chloroplast membranes?",
+          "gold": "the entire diatom endosymbiont as the chloroplast",
+          "original_answer": "entire diatom endosymbiont",
+          "method_answer": "genome reduction",
+          "compressed_text": "These chloroplasts are bounded by up to five membranes, (depending on whether you count the entire diatom endosymbiont as the chloroplast, or just the red algal derived chloroplast inside it). The diatom endosymbiont's nucleus is present, but it probably can't be called a nucleomorph because it shows no sign of genome reduction, and might have even been expanded.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_aggressive": {
+      "family": "lm",
+      "tokens_saved_pct": 48.67,
+      "score": 0.545,
+      "exact_match": 0.33,
+      "quality_retained": 0.6138,
+      "quality_retained_ci95": [
+        0.5475,
+        0.6806
+      ],
+      "examples_hurt": 115,
+      "worst_examples": [
+        {
+          "question": "In what part of the United States did many students migrate to Christian academies during the desegregation period?",
+          "gold": "South",
+          "original_answer": "South",
+          "method_answer": "white",
+          "compressed_text": "many after 1954 decision court Brown Topeka demanded United desegregate \"with deliberate speed\", local families organized wave private \"Christian academies\". much white migrated academies, public in turn (see List private Mississippi). academic content usually College Preparatory. Since \"segregation shut operate.[citation",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What is sometimes but not always counted regarding Durinskia's chloroplast membranes?",
+          "gold": "the entire diatom endosymbiont as the chloroplast",
+          "original_answer": "entire diatom endosymbiont",
+          "method_answer": "starch granules dinophyte host's",
+          "compressed_text": "Some dinophytes, Kryptoperidinium Durinskia diatom (heterokontophyte) derived chloroplast. chloroplasts bounded up membranes, (depending endosymbiont chloroplast, red algal derived inside reduced relatively little\u2014it mitochondria, endoplasmic reticulum, ribosomes, nucleus, of red derived chloroplasts\u2014practically cell, inside host's endoplasmic lumen. the can't store food\u2014its starch granules dinophyte host's instead. present, nucleomorph shows genome reduction, might expanded. Diatoms engulfed dinoflagellates",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What are the anitmicrobial peptides secreted by the skin called?",
+          "gold": "\u03b2-defensins",
+          "original_answer": "\u03b2-defensins",
+          "method_answer": "Enzymes lysozyme phospholipase A2 saliva, tears, breast antibacterials",
+          "compressed_text": "Chemical barriers also secrete \u03b2-defensins. Enzymes lysozyme phospholipase A2 saliva, tears, breast antibacterials. Vaginal secretions serve chemical following menarche, slightly acidic, semen defensins zinc gastric proteases powerful chemical ingested",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_safe_aggressive": {
+      "family": "lm_safe",
+      "tokens_saved_pct": 46.72,
+      "score": 0.5602,
+      "exact_match": 0.33,
+      "quality_retained": 0.6309,
+      "quality_retained_ci95": [
+        0.5679,
+        0.6938
+      ],
+      "examples_hurt": 113,
+      "worst_examples": [
+        {
+          "question": "In what part of the United States did many students migrate to Christian academies during the desegregation period?",
+          "gold": "South",
+          "original_answer": "South",
+          "method_answer": "public African-American",
+          "compressed_text": "United States, after 1954 decision Brown Education Topeka demanded United States \"with deliberate speed\", local families organized wave private \"Christian academies\". much U.S. white migrated academies, public African-American (see List private Mississippi). academic content College Preparatory. 1970s, \"segregation shut operate.[citation",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What is sometimes but not always counted regarding Durinskia's chloroplast membranes?",
+          "gold": "the entire diatom endosymbiont as the chloroplast",
+          "original_answer": "entire diatom endosymbiont",
+          "method_answer": "the can't food",
+          "compressed_text": "Some dinophytes, Kryptoperidinium Durinskia diatom (heterokontophyte) derived chloroplast. chloroplasts bounded up membranes, (depending endosymbiont chloroplast, red algal derived inside reduced relatively little\u2014it mitochondria, endoplasmic reticulum, ribosomes, of red chloroplasts\u2014practically cell, inside host's endoplasmic lumen. the can't food\u2014its starch granules dinophyte host's instead. present, can't nucleomorph shows no genome reduction, expanded. Diatoms engulfed dinoflagellates at least",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What are the anitmicrobial peptides secreted by the skin called?",
+          "gold": "\u03b2-defensins",
+          "original_answer": "\u03b2-defensins",
+          "method_answer": "Enzymes lysozyme phospholipase A2 saliva, tears, breast antibacterials",
+          "compressed_text": "Chemical barriers also secrete \u03b2-defensins. Enzymes lysozyme phospholipase A2 saliva, tears, breast antibacterials. Vaginal secretions serve chemical following menarche, slightly acidic, semen defensins zinc gastric proteases powerful chemical ingested",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "random_drop_aggressive": {
+      "family": "random_drop",
+      "tokens_saved_pct": 55.45,
+      "score": 0.3802,
+      "exact_match": 0.195,
+      "quality_retained": 0.4281,
+      "quality_retained_ci95": [
+        0.3675,
+        0.4896
+      ],
+      "examples_hurt": 144,
+      "worst_examples": [
+        {
+          "question": "Where were the Kikuyu people located?",
+          "gold": "The central highlands",
+          "original_answer": "The central highlands",
+          "method_answer": "Kenya",
+          "compressed_text": "The highlands were a of the of no land claims European and itinerant farmers. To protect their interests, the the introduced and landless were less land massive the cities as a land dwindled. living Kenya",
+          "score_drop": 1.0
+        },
+        {
+          "question": "In what part of the United States did many students migrate to Christian academies during the desegregation period?",
+          "gold": "South",
+          "original_answer": "South",
+          "method_answer": "many of the 1954",
+          "compressed_text": "In many of the 1954 landmark of that United States \"with all deliberate speed\", local organized wave U.S. migrated public schools (see List of private schools in the was Since the many of these \"segregation academies\" have shut continue needed]",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What is sometimes but not always counted regarding Durinskia's chloroplast membranes?",
+          "gold": "the entire diatom endosymbiont as the chloroplast",
+          "original_answer": "entire diatom endosymbiont",
+          "method_answer": "reduction",
+          "compressed_text": "a (heterokontophyte) derived chloroplasts are by to membranes, (depending you diatom endosymbiont the chloroplast, red has reduced retains its original mitochondria, has reticulum, and of course, red algal derived chloroplasts\u2014practically cell, all inside diatom endosymbiont its is found granules in cytoplasm instead. The nucleus but it probably can't called reduction, might engulfed by dinoflagellates three",
+          "score_drop": 1.0
+        }
+      ]
+    }
+  }
+}

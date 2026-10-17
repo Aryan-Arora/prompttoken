@@ -1,12 +1,17 @@
-"""Savings-vs-quality benchmark on SQuAD v1.1 (validation).
+"""Savings-vs-quality benchmark.
 
-Method: compress the *context* passage, keep the question, answer with an
-extractive QA model, score against the gold answers (SQuAD EM / token F1).
-Quality retained = mean F1 of a method / mean F1 on the original context, with
-a paired bootstrap 95% interval. Model outputs are cached per (question, text).
+Tasks
+  squad  SQuAD v1.1 validation. Compress the context passage, keep the question,
+         answer with an extractive QA model, score SQuAD F1 / exact match.
+  gsm8k  GSM8K test. Compress the whole problem statement, solve with a small
+         instruct model (greedy), score final-answer accuracy.
 
-Run:  python -m app.benchmark --n 200 --seed 0
-Needs: pip install -r requirements-benchmark.txt
+Quality retained = method score / original score, with a paired bootstrap 95%
+interval. Model outputs are cached per unique input.
+
+Run:  python -m app.benchmark --task squad --n 200 --seed 0 [--model NAME]
+      python -m app.benchmark --task gsm8k --n 100 --seed 0
+Needs: pip install -r requirements-ml.txt
 """
 import argparse
 import json
@@ -18,13 +23,22 @@ from collections import Counter
 from datetime import date
 from pathlib import Path
 
-from . import compressor, tokenizers
+from . import methods as methods_mod
+from . import tokenizers
 
-QA_MODEL = "distilbert-base-cased-distilled-squad"
-DATASET = "rajpurkar/squad"
+DEFAULT_MODELS = {
+    "squad": "distilbert-base-cased-distilled-squad",
+    "gsm8k": "Qwen/Qwen2.5-0.5B-Instruct",
+}
+DATASETS = {"squad": "rajpurkar/squad", "gsm8k": "openai/gsm8k"}
 RESULTS_DIR = Path(__file__).resolve().parent.parent / "results"
-CONTROL_RATES = [0.2, 0.4, 0.6]
+GSM8K_SYSTEM = (
+    "Solve the math problem. Reason step by step, then end with a final line "
+    "exactly like: The answer is <number>."
+)
 
+
+# ---------- metrics ----------
 
 def normalize_answer(s):
     s = s.lower()
@@ -35,8 +49,7 @@ def normalize_answer(s):
 
 def f1_score(pred, gold):
     p, g = normalize_answer(pred).split(), normalize_answer(gold).split()
-    common = Counter(p) & Counter(g)
-    same = sum(common.values())
+    same = sum((Counter(p) & Counter(g)).values())
     if not p or not g:
         return float(p == g)
     if same == 0:
@@ -53,51 +66,66 @@ def best_over_golds(metric, pred, golds):
     return max(metric(pred, g) for g in golds)
 
 
-def rule_based(context, idx, seed):
-    return compressor.compress(context)["compressed"]
+def extract_number(text):
+    found = re.findall(r"answer is[:\s]*\$?\s*(-?[\d,]*\.?\d+)", text, re.I)
+    if not found:
+        found = re.findall(r"-?\d[\d,]*\.?\d*", text)
+    if not found:
+        return None
+    try:
+        return float(found[-1].replace(",", "").rstrip("."))
+    except ValueError:
+        return None
 
 
-def random_word_drop(rate):
-    def method(context, idx, seed):
-        rng = random.Random(f"{seed}-{idx}-{rate}")
-        words = context.split()
-        kept = [w for w in words if rng.random() >= rate] or words[:1]
-        return " ".join(kept)
-    return method
+def numeric_correct(pred_text, gold):
+    value = extract_number(pred_text)
+    return float(value is not None and abs(value - float(gold)) < 1e-4)
 
 
-def build_methods():
-    methods = {"original": lambda c, i, s: c, "rule_based": rule_based}
-    for rate in CONTROL_RATES:
-        methods[f"random_drop_{int(rate * 100)}"] = random_word_drop(rate)
-    return methods
-
-
-def prompt_tokens(question, context):
-    return tokenizers.tokenize(f"{question}\n{context}", "gpt-4o")["count"]
-
-
-def bootstrap_ratio(f1_method, f1_orig, seed, rounds=1000):
+def bootstrap_ratio(scores, base, seed, rounds=1000):
     rng = random.Random(seed)
-    n = len(f1_orig)
+    n = len(base)
     ratios = []
     for _ in range(rounds):
         idx = [rng.randrange(n) for _ in range(n)]
-        denom = sum(f1_orig[i] for i in idx)
+        denom = sum(base[i] for i in idx)
         if denom > 0:
-            ratios.append(sum(f1_method[i] for i in idx) / denom)
+            ratios.append(sum(scores[i] for i in idx) / denom)
     ratios.sort()
     if not ratios:
         return None
     return [round(ratios[int(0.025 * len(ratios))], 4), round(ratios[int(0.975 * len(ratios)) - 1], 4)]
 
 
-def make_qa():
+# ---------- tasks ----------
+
+def load_examples(task, n, seed):
+    from datasets import load_dataset
+
+    if task == "squad":
+        data = load_dataset(DATASETS[task], split="validation").shuffle(seed=seed).select(range(n))
+        return [
+            {"text": ex["context"], "question": ex["question"], "golds": ex["answers"]["text"]}
+            for ex in data
+        ]
+    data = load_dataset(DATASETS[task], "main", split="test").shuffle(seed=seed).select(range(n))
+    return [
+        {
+            "text": ex["question"],
+            "question": "",
+            "golds": [ex["answer"].split("####")[-1].strip().replace(",", "")],
+        }
+        for ex in data
+    ]
+
+
+def make_extractive_qa(model_name):
     import torch
     from transformers import AutoModelForQuestionAnswering, AutoTokenizer
 
-    tok = AutoTokenizer.from_pretrained(QA_MODEL)
-    model = AutoModelForQuestionAnswering.from_pretrained(QA_MODEL).eval()
+    tok = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForQuestionAnswering.from_pretrained(model_name).eval()
 
     def answer(question, context):
         enc = tok(
@@ -124,62 +152,111 @@ def make_qa():
                         best_text = context[offsets[w][si][0]:offsets[w][ei][1]]
         return best_text
 
-    return answer
+    return lambda pairs, progress=None: [answer(q, c) for q, c in pairs]
 
 
-def run(n, seed, out):
-    from datasets import load_dataset
+def make_generator(model_name, batch_size=16, max_new_tokens=320):
+    import torch
+    from transformers import AutoModelForCausalLM, AutoTokenizer
 
-    data = load_dataset(DATASET, split="validation").shuffle(seed=seed).select(range(n))
-    qa_answer = make_qa()
-    cache = {}
+    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    dtype = torch.bfloat16 if device == "mps" else torch.float32
+    tok = AutoTokenizer.from_pretrained(model_name, padding_side="left")
+    model = AutoModelForCausalLM.from_pretrained(model_name, dtype=dtype).to(device).eval()
 
-    def answer(question, context):
-        key = (question, context)
-        if key not in cache:
-            cache[key] = qa_answer(question, context)
-        return cache[key]
+    def solve(pairs, progress=None):
+        prompts = [
+            tok.apply_chat_template(
+                [{"role": "system", "content": GSM8K_SYSTEM}, {"role": "user", "content": text}],
+                tokenize=False, add_generation_prompt=True,
+            )
+            for _, text in pairs
+        ]
+        order = sorted(range(len(prompts)), key=lambda i: len(prompts[i]))
+        outputs = [None] * len(prompts)
+        for lo in range(0, len(order), batch_size):
+            idx = order[lo:lo + batch_size]
+            enc = tok([prompts[i] for i in idx], return_tensors="pt", padding=True).to(device)
+            with torch.no_grad():
+                gen = model.generate(**enc, max_new_tokens=max_new_tokens, do_sample=False)
+            texts = tok.batch_decode(gen[:, enc["input_ids"].shape[1]:], skip_special_tokens=True)
+            for i, t in zip(idx, texts):
+                outputs[i] = t
+            if progress:
+                progress(min(lo + batch_size, len(order)), len(order), "generating")
+        return outputs
 
-    methods = build_methods()
-    scores = {m: {"f1": [], "em": [], "tokens": [], "pred": []} for m in methods}
+    return solve
+
+
+# ---------- run ----------
+
+def prompt_tokens(question, text):
+    return tokenizers.tokenize(f"{question}\n{text}" if question else text, "gpt-4o")["count"]
+
+
+def score_one(task, pred, golds):
+    if task == "squad":
+        return best_over_golds(f1_score, pred, golds), best_over_golds(exact_match, pred, golds)
+    correct = numeric_correct(pred, golds[0])
+    return correct, correct
+
+
+def run(task="squad", n=200, seed=0, out=None, model=None, progress=None, answerer=None):
+    progress = progress or (lambda done, total, stage: None)
+    model = model or DEFAULT_MODELS[task]
     started = time.time()
+    examples = load_examples(task, n, seed)
+    methods = methods_mod.build_methods(with_query=(task == "squad"))
 
-    for idx, ex in enumerate(data):
-        golds = ex["answers"]["text"]
+    compressed = {}
+    for idx, ex in enumerate(examples):
         for name, fn in methods.items():
-            ctx = fn(ex["context"], idx, seed)
-            pred = answer(ex["question"], ctx)
-            scores[name]["f1"].append(best_over_golds(f1_score, pred, golds))
-            scores[name]["em"].append(best_over_golds(exact_match, pred, golds))
-            scores[name]["tokens"].append(prompt_tokens(ex["question"], ctx))
-            scores[name]["pred"].append(pred)
-        if (idx + 1) % 25 == 0:
-            print(f"  {idx + 1}/{n} examples, {time.time() - started:.0f}s", flush=True)
+            compressed[(idx, name)] = fn(ex["text"], ex["question"], idx, seed, [])
+        progress(idx + 1, len(examples), "compressing")
 
-    base = scores["original"]
-    base_tokens = sum(base["tokens"])
-    base_f1 = sum(base["f1"]) / n
+    pairs = sorted({(examples[i]["question"], text) for (i, _), text in compressed.items()})
+    if answerer is None:
+        answerer = make_extractive_qa(model) if task == "squad" else make_generator(model)
+    answers = dict(zip(pairs, answerer(pairs, progress)))
+
+    results = {m: {"score": [], "em": [], "tokens": [], "pred": []} for m in methods}
+    for idx, ex in enumerate(examples):
+        for name in methods:
+            text = compressed[(idx, name)]
+            pred = answers[(ex["question"], text)]
+            s, em = score_one(task, pred, ex["golds"])
+            r = results[name]
+            r["score"].append(s)
+            r["em"].append(em)
+            r["tokens"].append(prompt_tokens(ex["question"], text))
+            r["pred"].append(pred)
+
+    base = results["original"]
+    base_tokens, base_score = sum(base["tokens"]), sum(base["score"]) / n
     report = {}
-    for name, s in scores.items():
-        mean_f1 = sum(s["f1"]) / n
+    for name, r in results.items():
+        mean = sum(r["score"]) / n
         drops = sorted(
-            ((base["f1"][i] - s["f1"][i], i) for i in range(n) if base["f1"][i] - s["f1"][i] > 0),
+            ((base["score"][i] - r["score"][i], i) for i in range(n) if base["score"][i] > r["score"][i]),
             reverse=True,
         )
         report[name] = {
-            "tokens_saved_pct": round(100 * (1 - sum(s["tokens"]) / base_tokens), 2),
-            "f1": round(mean_f1, 4),
-            "exact_match": round(sum(s["em"]) / n, 4),
-            "quality_retained": round(mean_f1 / base_f1, 4) if base_f1 else None,
-            "quality_retained_ci95": bootstrap_ratio(s["f1"], base["f1"], seed) if name != "original" else None,
+            "family": methods_mod.family(name),
+            "tokens_saved_pct": round(100 * (1 - sum(r["tokens"]) / base_tokens), 2),
+            "score": round(mean, 4),
+            "exact_match": round(sum(r["em"]) / n, 4) if task == "squad" else None,
+            "quality_retained": round(mean / base_score, 4) if base_score else None,
+            "quality_retained_ci95": bootstrap_ratio(r["score"], base["score"], seed) if name != "original" else None,
             "examples_hurt": len(drops),
             "worst_examples": [
                 {
-                    "question": data[i]["question"],
-                    "gold": data[i]["answers"]["text"][0],
-                    "original_answer": base["pred"][i],
-                    "method_answer": s["pred"][i],
-                    "f1_drop": round(d, 3),
+                    "question": examples[i]["question"] or examples[i]["text"][:200],
+                    "gold": examples[i]["golds"][0],
+                    "original_answer": base["pred"][i][-200:],
+                    "method_answer": r["pred"][i][-200:],
+                    "compressed_text": compressed[(i, name)][:600],
+                    "score_drop": round(d, 3),
                 }
                 for d, i in drops[:3]
             ],
@@ -187,35 +264,45 @@ def run(n, seed, out):
 
     result = {
         "meta": {
-            "dataset": DATASET, "split": "validation", "n": n, "seed": seed,
-            "qa_model": QA_MODEL, "token_counter": "tiktoken o200k_base, question + context",
+            "task": task, "dataset": DATASETS[task], "n": n, "seed": seed,
+            "metric": "F1" if task == "squad" else "accuracy",
+            "answer_model": model, "scorer_lm": "distilgpt2 (lm_* methods)",
+            "token_counter": "tiktoken o200k_base"
+            + (", question + context" if task == "squad" else ", problem text"),
             "date": date.today().isoformat(), "runtime_s": round(time.time() - started, 1),
-            "notes": "random_drop_* are blind controls, not proposed methods.",
+            "notes": "random_drop_* are blind controls. lm_safe_* never drop numbers, names, "
+                     "negations, or constraint words. query_sentence_* uses the question.",
         },
         "methods": report,
     }
-    out = Path(out) if out else RESULTS_DIR / f"squad_n{n}_seed{seed}.json"
+    out = Path(out) if out else RESULTS_DIR / f"{task}_n{n}_seed{seed}_{model.split('/')[-1]}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, indent=2))
-    print_table(result)
-    print(f"\nSaved {out}")
-    return result
+    return result, out
 
 
 def print_table(result):
-    print(f"\n{'method':<16}{'saved %':>9}{'F1':>8}{'EM':>8}{'retained':>10}  95% CI")
+    meta = result["meta"]
+    print(f"\n{meta['task']} n={meta['n']} seed={meta['seed']} model={meta['answer_model']} metric={meta['metric']}")
+    print(f"{'method':<24}{'saved %':>9}{'score':>8}{'retained':>10}  95% CI")
     for name, r in result["methods"].items():
         ci = r["quality_retained_ci95"]
-        print(
-            f"{name:<16}{r['tokens_saved_pct']:>9}{r['f1']:>8}{r['exact_match']:>8}"
-            f"{r['quality_retained']:>10}  {ci if ci else '-'}"
-        )
+        print(f"{name:<24}{r['tokens_saved_pct']:>9}{r['score']:>8}{r['quality_retained']:>10}  {ci if ci else '-'}")
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
+    ap.add_argument("--task", choices=list(DATASETS), default="squad")
     ap.add_argument("--n", type=int, default=200)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--model", default=None)
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
-    run(args.n, args.seed, args.out)
+
+    def show(done, total, stage):
+        if done == total or done % 25 == 0:
+            print(f"  {stage}: {done}/{total}", flush=True)
+
+    res, path = run(args.task, args.n, args.seed, args.out, args.model, progress=show)
+    print_table(res)
+    print(f"\nSaved {path}")

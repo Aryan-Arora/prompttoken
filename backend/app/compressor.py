@@ -181,22 +181,26 @@ def compress(text, protected_spans=()):
     pieces.append(_normalize_whitespace(run).rstrip(" \t"))
     compressed = "".join(pieces)
 
-    protected_texts = [text[s:e] for s, e in spans]
-    cursor, intact = 0, 0
-    for ptxt in protected_texts:
-        idx = compressed.find(ptxt, cursor)
-        if idx >= 0:
-            intact += 1
-            cursor = idx + len(ptxt)
-
     segments = _diff_segments(text, compressed)
     removed = [s["text"].strip() for s in segments if s["kind"] == "removed" and s["text"].strip()]
     return {
         "compressed": compressed,
         "segments": segments,
         "removed": removed,
-        "protected": {"total": len(protected_texts), "intact": intact},
+        "protected": protected_stats(text, spans, compressed),
     }
+
+
+def protected_stats(text, spans, compressed):
+    """Count protected spans whose exact text survives, in order, in the output."""
+    texts = [text[s:e] for s, e in spans]
+    cursor, intact = 0, 0
+    for ptxt in texts:
+        idx = compressed.find(ptxt, cursor)
+        if idx >= 0:
+            intact += 1
+            cursor = idx + len(ptxt)
+    return {"total": len(texts), "intact": intact}
 
 
 def _sentence_units(chunk):

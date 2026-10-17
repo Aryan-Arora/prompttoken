@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Benchmark from "./Benchmark.jsx";
 import Compress from "./Compress.jsx";
 
 const API_URL = "http://localhost:8000";
@@ -152,9 +153,17 @@ export default function App() {
         >
           Compress
         </button>
+        <button
+          className={tab === "benchmark" ? "tab active" : "tab"}
+          onClick={() => setTab("benchmark")}
+        >
+          Benchmark
+        </button>
       </nav>
 
-      {tab === "compress" ? (
+      {tab === "benchmark" ? (
+        <Benchmark />
+      ) : tab === "compress" ? (
         <Compress text={text} setText={setText} />
       ) : (
         <>

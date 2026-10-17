@@ -1,6 +1,6 @@
 # PromptToken Analyzer & Compressor
 
-Status: Week 1 (tokenizer analyzer) and Week 2 (rule-based compressor with protected spans, diff, and savings report) are built. Model-based pruning and the benchmark are not.
+Status: tokenizer analyzer, rule-based and model-based compression with protected spans, diff and savings report, prompt linter, meaning-risk check, SQuAD benchmark on two QA models, security experiment, and a Benchmark tab are built. GSM8K is wired up but not yet run. Details and results: [context.md](context.md).
 
 ## Run the backend
 
@@ -34,9 +34,12 @@ Open http://localhost:5173. Paste a prompt, pick tokenizers, hit Analyze.
 - `backend/app/pricing.py` — illustrative cost rate (placeholder, not a published price)
 - `frontend/src/Compress.jsx` — compress screen: lock spans, diff, savings report
 - `backend/app/risk.py`, `backend/app/lint.py` — meaning-risk check and prompt linter (`POST /lint`)
-- `backend/app/benchmark.py` — SQuAD benchmark: `pip install -r requirements-benchmark.txt && python -m app.benchmark --n 200 --seed 0`; results in `backend/results/`
+- `backend/app/lm_pruner.py`, `backend/app/methods.py` — model-based pruning (distilgpt2), query-aware sentence selection, and all methods under test
+- `backend/app/benchmark.py` — `pip install -r requirements-ml.txt && python -m app.benchmark --task squad --n 200 --seed 0` (also `--task gsm8k`, `--model`); results in `backend/results/`
+- `backend/app/security.py` — `python -m app.security --n 100 --seed 0`
+- `frontend/src/Benchmark.jsx` — Benchmark tab: chart, results table, failure examples, security tables, run button
 - Tests: `cd backend && pip install pytest && python -m pytest`
 
-## Next (Week 3)
+## Next
 
-Model-based importance pruning and compression levels, compared against this baseline.
+Run GSM8K, try a stronger scorer or a hybrid method, write up the results.
