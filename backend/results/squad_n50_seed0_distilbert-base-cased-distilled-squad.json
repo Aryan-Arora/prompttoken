@@ -1,0 +1,496 @@
+{
+  "meta": {
+    "task": "squad",
+    "dataset": "rajpurkar/squad",
+    "n": 50,
+    "seed": 0,
+    "metric": "F1",
+    "answer_model": "distilbert-base-cased-distilled-squad",
+    "scorer_lm": "distilgpt2 (lm_* methods)",
+    "token_counter": "tiktoken o200k_base, question + context",
+    "date": "2026-10-18",
+    "runtime_s": 30.1,
+    "notes": "random_drop_* are blind controls. lm_safe_* never drop numbers, names, negations, or constraint words. query_sentence_* uses the question."
+  },
+  "methods": {
+    "original": {
+      "family": "original",
+      "tokens_saved_pct": 0.0,
+      "score": 0.891,
+      "exact_match": 0.82,
+      "quality_retained": 1.0,
+      "quality_retained_ci95": null,
+      "examples_hurt": 0,
+      "worst_examples": []
+    },
+    "rule_based": {
+      "family": "rule_based",
+      "tokens_saved_pct": 0.0,
+      "score": 0.891,
+      "exact_match": 0.82,
+      "quality_retained": 1.0,
+      "quality_retained_ci95": [
+        1.0,
+        1.0
+      ],
+      "examples_hurt": 0,
+      "worst_examples": []
+    },
+    "query_sentence_light": {
+      "family": "query_sentence",
+      "tokens_saved_pct": 12.41,
+      "score": 0.8445,
+      "exact_match": 0.8,
+      "quality_retained": 0.9478,
+      "quality_retained_ci95": [
+        0.8685,
+        1.0074
+      ],
+      "examples_hurt": 3,
+      "worst_examples": [
+        {
+          "question": "What does the Nederrijn change it's name to?",
+          "gold": "Lek",
+          "original_answer": "Lek",
+          "method_answer": "IJssel",
+          "compressed_text": "The other third of the water flows through the Pannerdens Kanaal and redistributes in the IJssel and Nederrijn. The IJssel branch carries one ninth of the water flow of the Rhine north into the IJsselmeer (a former bay), while the Nederrijn carries approximately two ninths of the flow west along a route parallel to the Waal. It flows farther west, to rejoin the Noord River into the Nieuwe Maas and to the North Sea.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "How many people in Quzhou are descended from Confucius?",
+          "gold": "30,000",
+          "original_answer": "30,000",
+          "method_answer": "two",
+          "compressed_text": "During the Southern Song dynasty the descendant of Confucius at Qufu, the Duke Yansheng Kong Duanyou fled south with the Song Emperor to Quzhou, while the newly established Jin dynasty (1115\u20131234) in the north appointed Kong Duanyou's brother Kong Duancao who remained in Qufu as Duke Yansheng. From that time up until the Yuan dynasty, there were two Duke Yanshengs, once in the north in Qufu and the other in the south at Quzhou. During the Yuan dynasty, the Emperor Kublai Khan invited the southern Duke Yansheng Kong Zhu to return to Qufu. The southern branch still remained in Quzhou where they ",
+          "score_drop": 1.0
+        },
+        {
+          "question": "How do platyctenids reproduce?",
+          "gold": "internal fertilization and keep the eggs in brood chambers until they hatch.",
+          "original_answer": "use internal fertilization and keep the eggs in brood chambers until they hatch",
+          "method_answer": "eggs and sperm are released via pores in the epidermis",
+          "compressed_text": "Almost all species are hermaphrodites, in other words they function as both males and females at the same time \u2013 except that in two species of the genus Ocryopsis individuals remain of the same single sex all their lives. The gonads are located in the parts of the internal canal network under the comb rows, and eggs and sperm are released via pores in the epidermis. Self-fertilization has occasionally been seen in species of the genus Mnemiopsis, and it is thought that most of the hermaphroditic species are self-fertile.",
+          "score_drop": 0.657
+        }
+      ]
+    },
+    "lm_light": {
+      "family": "lm",
+      "tokens_saved_pct": 15.22,
+      "score": 0.8443,
+      "exact_match": 0.56,
+      "quality_retained": 0.9476,
+      "quality_retained_ci95": [
+        0.8901,
+        1.0176
+      ],
+      "examples_hurt": 16,
+      "worst_examples": [
+        {
+          "question": "What kind of organism is Cyanophora?",
+          "gold": "alga",
+          "original_answer": "glaucophyte",
+          "method_answer": "alga Cyanophora, glaucophyte",
+          "compressed_text": "The alga Cyanophora, glaucophyte, thought one first organisms contain a chloroplast. The glaucophyte chloroplast group the smallest three primary chloroplast lineages, being found only 13 species, and thought one that branched off the earliest. Glaucophytes have chloroplasts retain a peptidoglycan wall between their double membranes, like their cyanobacterial parent. For this glaucophyte chloroplasts also known muroplasts. Glaucophyte also contain concentric unstacked thylakoids, surround a carboxysome - an icosahedral glaucophyte chloroplasts and cyanobacteria keep their carbon fixation enzym",
+          "score_drop": 0.5
+        },
+        {
+          "question": "What did Genghis Khan expect from his generals alongside the autonomy he granted them?",
+          "gold": "unwavering loyalty",
+          "original_answer": "unwavering loyalty",
+          "method_answer": "unwavering them",
+          "compressed_text": "Genghis put absolute trust his generals, such Muqali, Jebe and Subutai, and regarded close advisors, often extending them the same privileges and trust normally reserved close family He allowed them make decisions on their when they embarked campaigns far from the Mongol Empire capital Karakorum. Muqali, a trusted lieutenant, was given command Mongol forces against Jin dynasty while Genghis fighting in Central Asia, and Subutai and Jebe allowed pursue the Great Raid into the Caucasus and Kievan Rus', an idea they had presented Khagan on their initiative. While granting his generals a great aut",
+          "score_drop": 0.5
+        },
+        {
+          "question": "What church in Virginia is maintained by Huguenots as a historic shrine?",
+          "gold": "Manakin Episcopal Church",
+          "original_answer": "Manakin Episcopal Church",
+          "method_answer": "Manakin Episcopal Virginia",
+          "compressed_text": "Paul Revere was descended Huguenot refugees, as was Henry Laurens, who signed Articles for South Carolina; Jack Jouett, made the ride from Cuckoo Tavern warn Thomas and others that Tarleton and his men on their arrest him for crimes king; Francis Marion, and a number leaders American Revolution and later statesmen. The last active Huguenot congregation North America worships in Charleston, at a church that dates to 1844. The Huguenot Society of America maintains Manakin Episcopal Virginia as an historic shrine with occasional services. The Society has chapters numerous states, with the one Tex",
+          "score_drop": 0.333
+        }
+      ]
+    },
+    "lm_safe_light": {
+      "family": "lm_safe",
+      "tokens_saved_pct": 14.78,
+      "score": 0.8349,
+      "exact_match": 0.58,
+      "quality_retained": 0.9371,
+      "quality_retained_ci95": [
+        0.888,
+        0.9779
+      ],
+      "examples_hurt": 15,
+      "worst_examples": [
+        {
+          "question": "What kind of organism is Cyanophora?",
+          "gold": "alga",
+          "original_answer": "glaucophyte",
+          "method_answer": "alga Cyanophora, glaucophyte",
+          "compressed_text": "The alga Cyanophora, glaucophyte, thought one first organisms contain a chloroplast. The glaucophyte chloroplast group the smallest three primary chloroplast lineages, being found only 13 species, and thought one that branched off the earliest. Glaucophytes have chloroplasts retain a peptidoglycan wall between their double membranes, like their cyanobacterial parent. For this glaucophyte chloroplasts also known muroplasts. Glaucophyte also contain concentric unstacked thylakoids, surround a carboxysome - an icosahedral glaucophyte chloroplasts and cyanobacteria keep their carbon fixation enzym",
+          "score_drop": 0.5
+        },
+        {
+          "question": "What did Genghis Khan expect from his generals alongside the autonomy he granted them?",
+          "gold": "unwavering loyalty",
+          "original_answer": "unwavering loyalty",
+          "method_answer": "unwavering them",
+          "compressed_text": "Genghis Khan put absolute trust his generals, such Muqali, Jebe and Subutai, regarded close advisors, often extending them the same privileges and trust normally reserved close family He allowed them make decisions on their when embarked campaigns far from the Mongol Empire capital Karakorum. Muqali, a trusted lieutenant, given command Mongol forces against Jin dynasty while Genghis Khan fighting in Central Asia, and Subutai and Jebe allowed pursue the Great Raid into Caucasus and Kievan Rus', an idea they had presented Khagan on their initiative. While granting his generals a great autonomy i",
+          "score_drop": 0.5
+        },
+        {
+          "question": "What can cause salaries to go higher than the range?",
+          "gold": "experience and extra responsibilities",
+          "original_answer": "experience and extra responsibilities",
+          "method_answer": "extra responsibilities",
+          "compressed_text": "Salaries for Nursery, Primary Secondary School teachers ranged \u00a320,133 \u00a341,004 in September 2007, although some salaries can go much depending experience extra responsibilities. Preschool teachers may earn \u00a320,980 annually.[citation Teachers in state must have at least bachelor's complete an approved teacher education program, be licensed.",
+          "score_drop": 0.333
+        }
+      ]
+    },
+    "random_drop_light": {
+      "family": "random_drop",
+      "tokens_saved_pct": 18.68,
+      "score": 0.6945,
+      "exact_match": 0.44,
+      "quality_retained": 0.7795,
+      "quality_retained_ci95": [
+        0.6659,
+        0.8907
+      ],
+      "examples_hurt": 20,
+      "worst_examples": [
+        {
+          "question": "This causes the rock unit as a whole to become longer and thinner. ",
+          "gold": "Extension",
+          "original_answer": "Extension",
+          "method_answer": "ductile stretching and thinning",
+          "compressed_text": "rock units as a whole to become longer and thinner. This primarily through normal and through the ductile stretching and thinning. Normal faults drop rock units that higher are lower. This typically results in younger units placed below older units. Stretching of units can result in their in fact, there is a location within the Maria Fold and Thrust Belt in the entire sedimentary sequence of the Grand Canyon can be seen over a length of less a meter. Rocks at the to be stretched are stretched rocks also into lenses, known as boudins, the for \"sausage\", because of their visual similarity.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Approximately how many images were digitized during the first year of the digitization project?",
+          "gold": "15,000",
+          "original_answer": "15,000",
+          "method_answer": "images were taken during the first year of Factory Project",
+          "compressed_text": "The Victoria Albert Museum\u2019s Word and Department under the same pressure being felt in archives around the to digitize their collection. A large scale began in 2007 in that department. project was the Factory to reference Andy and to create factory to completely the collection. first step the Factory was to photographs digital cameras. The Word and Image Department collection of old photos but they were in and white and in conditions, so new shot. Those new will be accessible to researchers to Victoria and Albert Museum web-site. images were taken during the first year of Factory Project, incl",
+          "score_drop": 1.0
+        },
+        {
+          "question": " Where were missing patents later found?",
+          "gold": "patent archives",
+          "original_answer": "patent archives",
+          "method_answer": "26 countries",
+          "compressed_text": "around 300 worldwide his inventions. Some of Tesla's patents are not accounted for, and various sources have some that have hidden in There a minimum of patents issued in 26 countries been accounted for. Many of Tesla's patents were in the United States, Britain, and Canada, but many other were approved in countries around the globe.:62 Many inventions developed by Tesla were put into patent protection.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "query_sentence_medium": {
+      "family": "query_sentence",
+      "tokens_saved_pct": 31.42,
+      "score": 0.7354,
+      "exact_match": 0.7,
+      "quality_retained": 0.8254,
+      "quality_retained_ci95": [
+        0.6992,
+        0.9395
+      ],
+      "examples_hurt": 9,
+      "worst_examples": [
+        {
+          "question": "What does the Nederrijn change it's name to?",
+          "gold": "Lek",
+          "original_answer": "Lek",
+          "method_answer": "IJssel",
+          "compressed_text": "The other third of the water flows through the Pannerdens Kanaal and redistributes in the IJssel and Nederrijn. The IJssel branch carries one ninth of the water flow of the Rhine north into the IJsselmeer (a former bay), while the Nederrijn carries approximately two ninths of the flow west along a route parallel to the Waal.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What did Genghis Khan expect from his generals alongside the autonomy he granted them?",
+          "gold": "unwavering loyalty",
+          "original_answer": "unwavering loyalty",
+          "method_answer": "absolute trust",
+          "compressed_text": "Genghis Khan put absolute trust in his generals, such as Muqali, Jebe and Subutai, and regarded them as close advisors, often extending them the same privileges and trust normally reserved for close family members. Muqali, a trusted lieutenant, was given command of the Mongol forces against the Jin dynasty while Genghis Khan was fighting in Central Asia, and Subutai and Jebe were allowed to pursue the Great Raid into the Caucasus and Kievan Rus', an idea they had presented to the Khagan on their own initiative.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "How many divisions was ABC radio restructured into in 2005?",
+          "gold": "six divisions",
+          "original_answer": "six",
+          "method_answer": "Between May and September 2005, rumors circulated that Disney\u2013ABC was considering a sale of ABC Radio, with Clear Channel Communications and Westwood One",
+          "compressed_text": "Between May and September 2005, rumors circulated that Disney\u2013ABC was considering a sale of ABC Radio, with Clear Channel Communications and Westwood One (which had earlier purchased NBC's radio division, as well as the distribution rights to CBS's, and the Mutual Broadcasting System during the 1990s) as potential buyers.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_medium": {
+      "family": "lm",
+      "tokens_saved_pct": 31.42,
+      "score": 0.6675,
+      "exact_match": 0.42,
+      "quality_retained": 0.7492,
+      "quality_retained_ci95": [
+        0.6296,
+        0.8794
+      ],
+      "examples_hurt": 23,
+      "worst_examples": [
+        {
+          "question": "What did Genghis Khan expect from his generals alongside the autonomy he granted them?",
+          "gold": "unwavering loyalty",
+          "original_answer": "unwavering loyalty",
+          "method_answer": "great making command decisions",
+          "compressed_text": "Genghis put absolute trust generals, such Muqali, Jebe and Subutai, regarded close advisors, often extending them the privileges trust normally close family He allowed make on when embarked campaigns far Mongol Empire capital Karakorum. Muqali, a trusted lieutenant, given command Mongol forces against Jin while Genghis fighting Central Subutai and allowed pursue Great Raid into Caucasus Kievan Rus', an idea they presented Khagan on initiative. While granting his generals great making command decisions, also expected unwavering them.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Who were the defending Super Bowl champions?",
+          "gold": "New England Patriots",
+          "original_answer": "New England Patriots",
+          "method_answer": "Broncos",
+          "compressed_text": "The Panthers finished the regular 15\u20131 record, and quarterback was named NFL Most (MVP). They defeated Arizona 49\u201315 in NFC and advanced their second Super appearance the franchise was founded 1995. The Broncos finished 12\u20134 denied New a chance defend title from Super XLIX by defeating them 20\u201318 AFC They joined Patriots, Dallas and Pittsburgh as one four that have made eight appearances Super",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What type of degree must a teacher have, at a minimum?",
+          "gold": "a bachelor's degree",
+          "original_answer": "bachelor's degree",
+          "method_answer": "licensed",
+          "compressed_text": "Salaries Nursery, Primary School teachers ranged \u00a320,133 \u00a341,004 in September 2007, although salaries can go much depending experience extra responsibilities. Preschool may \u00a320,980 annually.[citation Teachers state must complete an approved teacher program, be licensed.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_safe_medium": {
+      "family": "lm_safe",
+      "tokens_saved_pct": 29.96,
+      "score": 0.7365,
+      "exact_match": 0.46,
+      "quality_retained": 0.8266,
+      "quality_retained_ci95": [
+        0.7252,
+        0.9128
+      ],
+      "examples_hurt": 21,
+      "worst_examples": [
+        {
+          "question": "What type of degree must a teacher have, at a minimum?",
+          "gold": "a bachelor's degree",
+          "original_answer": "bachelor's degree",
+          "method_answer": "approved teacher program, licensed",
+          "compressed_text": "Salaries Nursery, Primary Secondary School teachers ranged \u00a320,133 \u00a341,004 September 2007, salaries can much depending experience extra responsibilities. Preschool teachers may \u00a320,980 annually.[citation Teachers state must at least complete an approved teacher program, licensed.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "How many divisions was ABC radio restructured into in 2005?",
+          "gold": "six divisions",
+          "original_answer": "six",
+          "method_answer": "Entertainment Communications, Communications Resources, Kids Communications, News Communications, Corporate Communications, International Communications.",
+          "compressed_text": "Between May September 2005, rumors Disney\u2013ABC sale ABC Radio, Clear Channel Communications Westwood One (which earlier NBC's radio division, distribution CBS's, Mutual Broadcasting System during 1990s) as October 19, 2005, ABC restructuring group into Entertainment Communications, Communications Resources, Kids Communications, News Communications, Corporate Communications, International Communications.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Miller-Boyett Productions was a studio affiliated with what company?",
+          "gold": "Warner Bros.",
+          "original_answer": "Warner Bros.",
+          "method_answer": "Paramount Television",
+          "compressed_text": "Following initial success these series, ABC revamped Friday around family-friendly 1980s, culminating 1989 debut \"TGIF\" block (which promotions referenced stood \"Thank Goodness It's Funny\"). Many during block Miller-Boyett Productions, Warner Bros.-based briefly programmed entire Friday lineup 1990\u201391 (with Going Places joining Family Matters, Full House Perfect Strangers on \"TGIF\" schedule) through development deal Paramount Television prior 1986 (as Miller-Milkis, later, Miller-Milkis-Boyett Productions), had earlier Happy Days its various among for",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "random_drop_medium": {
+      "family": "random_drop",
+      "tokens_saved_pct": 36.52,
+      "score": 0.549,
+      "exact_match": 0.3,
+      "quality_retained": 0.6162,
+      "quality_retained_ci95": [
+        0.4871,
+        0.742
+      ],
+      "examples_hurt": 31,
+      "worst_examples": [
+        {
+          "question": "While producing oxygen, what gas does a zeolite sieve absorb?",
+          "gold": "nitrogen",
+          "original_answer": "nitrogen",
+          "method_answer": "Oxygen",
+          "compressed_text": "other major method of producing O\n2 a stream of clean, air through one of a pair of identical zeolite molecular which the and delivers a gas stream that is 90% 93% O\n2. is released the zeolite by chamber operating pressure and of the gas in the direction of flow. set time the operation of the beds is allowing for a supply oxygen to pumped pipeline. as pressure swing Oxygen gas is obtained these non-cryogenic (see related vacuum",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What cycle AC current system did Tesla propose?",
+          "gold": "60-cycle",
+          "original_answer": "60",
+          "method_answer": "to the frequency of motor",
+          "compressed_text": "During that year, in create an current to He found the time because of conflicts between him and the other Westinghouse engineers over implement AC Between they settled on a AC system Tesla (to the frequency of motor), although soon found Tesla's motor could only run a constant would work for street a DC traction instead.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Who did the Dutch fight in the Dutch Revolt?",
+          "gold": "Spain",
+          "original_answer": "Spain",
+          "method_answer": "Huguenots",
+          "compressed_text": "Some Huguenots fought in Low during the first years of the Dutch Revolt (1568\u20131609). a for Huguenot ties were already visible in \"Apologie\" William the Silent, condemning the Spanish was written his court the Huguenot L'Oyseleur, lord of Villiers. de Coligny, the murdered Huguenot leader Gaspard Coligny, leader of the Dutch (Calvinist) As both spoke French daily life, their church in the Delft held services French. The has continued the present day. The is 14 active Walloon churches of Dutch Reformed ties between Huguenots and the Dutch Republic's and political the of which existed since the d",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "query_sentence_aggressive": {
+      "family": "query_sentence",
+      "tokens_saved_pct": 47.26,
+      "score": 0.763,
+      "exact_match": 0.68,
+      "quality_retained": 0.8564,
+      "quality_retained_ci95": [
+        0.7449,
+        0.9494
+      ],
+      "examples_hurt": 10,
+      "worst_examples": [
+        {
+          "question": "What church in Virginia is maintained by Huguenots as a historic shrine?",
+          "gold": "Manakin Episcopal Church",
+          "original_answer": "Manakin Episcopal Church",
+          "method_answer": "Paul Revere was descended from Huguenot refugees, as was Henry Laurens, who signed the Articles of Confederation for South Carolina",
+          "compressed_text": "Paul Revere was descended from Huguenot refugees, as was Henry Laurens, who signed the Articles of Confederation for South Carolina; Jack Jouett, who made the ride from Cuckoo Tavern to warn Thomas Jefferson and others that Tarleton and his men were on their way to arrest him for crimes against the king; Francis Marion, and a number of other leaders of the American Revolution and later statesmen.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What does the Nederrijn change it's name to?",
+          "gold": "Lek",
+          "original_answer": "Lek",
+          "method_answer": "IJssel",
+          "compressed_text": "The IJssel branch carries one ninth of the water flow of the Rhine north into the IJsselmeer (a former bay), while the Nederrijn carries approximately two ninths of the flow west along a route parallel to the Waal.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "How many divisions was ABC radio restructured into in 2005?",
+          "gold": "six divisions",
+          "original_answer": "six",
+          "method_answer": "Between May and September 2005, rumors circulated that Disney\u2013ABC was considering a sale of ABC Radio, with Clear Channel Communications and Westwood One",
+          "compressed_text": "Between May and September 2005, rumors circulated that Disney\u2013ABC was considering a sale of ABC Radio, with Clear Channel Communications and Westwood One (which had earlier purchased NBC's radio division, as well as the distribution rights to CBS's, and the Mutual Broadcasting System during the 1990s) as potential buyers.",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_aggressive": {
+      "family": "lm",
+      "tokens_saved_pct": 48.45,
+      "score": 0.5687,
+      "exact_match": 0.32,
+      "quality_retained": 0.6383,
+      "quality_retained_ci95": [
+        0.4996,
+        0.7631
+      ],
+      "examples_hurt": 29,
+      "worst_examples": [
+        {
+          "question": "This causes the rock unit as a whole to become longer and thinner. ",
+          "gold": "Extension",
+          "original_answer": "Extension",
+          "method_answer": "ductile stretching thinning",
+          "compressed_text": "Extension causes rock units as longer primarily accomplished normal faulting through ductile stretching thinning. Normal drop rock below those typically younger units Stretching units their thinning; location Maria Fold Thrust Belt entire sedimentary sequence Grand over Rocks depth to ductilely metamorphosed. stretched pinch lenses, known boudins, after French word \"sausage\", visual",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Who were the defending Super Bowl champions?",
+          "gold": "New England Patriots",
+          "original_answer": "New England Patriots",
+          "method_answer": "Arizona",
+          "compressed_text": "The Panthers finished 15\u20131 quarterback named NFL Most (MVP). They defeated Arizona 49\u201315 and advanced their Super franchise 1995. Broncos 12\u20134 denied New chance defend from Super XLIX by them 20\u201318 They joined Patriots, Dallas Pittsburgh one four have made eight appearances",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What is the legislature of the European Union comprised of?",
+          "gold": "the European Parliament and the Council of the European Union",
+          "original_answer": "European Parliament and the Council of the European Union",
+          "method_answer": "principally under Treaties",
+          "compressed_text": "European law is a body treaties legislation, such Regulations Directives, direct or laws European member three sources European primary law, secondary supplementary primary Treaties establishing Union. Secondary sources regulations which based Treaties. legislature principally under Treaties may establish secondary to pursue objective set",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "lm_safe_aggressive": {
+      "family": "lm_safe",
+      "tokens_saved_pct": 45.89,
+      "score": 0.5605,
+      "exact_match": 0.28,
+      "quality_retained": 0.6291,
+      "quality_retained_ci95": [
+        0.5108,
+        0.7505
+      ],
+      "examples_hurt": 32,
+      "worst_examples": [
+        {
+          "question": "Who did the Dutch fight in the Dutch Revolt?",
+          "gold": "Spain",
+          "original_answer": "Spain",
+          "method_answer": "Huguenots Dutch Republic's House Orange-Nassau",
+          "compressed_text": "Huguenots Low Countries Dutch Spain Dutch Revolt (1568\u20131609). Dutch Republic rapidly Huguenot exiles. ties visible \"Apologie\" William Silent, condemning Spanish Inquisition, Huguenot Pierre L'Oyseleur, lord Villiers. Louise Coligny, Huguenot Gaspard Coligny, William Silent, Dutch (Calvinist) revolt Spanish (Catholic) spoke French daily court church Prinsenhof Delft services French. Prinsenhof 14 Walloon Dutch Reformed Church. ties Huguenots Dutch Republic's House Orange-Nassau, Dutch Revolt, settlements Huguenots Dutch Republic's Cape Good Hope South Africa New Netherland North America.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What did Genghis Khan expect from his generals alongside the autonomy he granted them?",
+          "gold": "unwavering loyalty",
+          "original_answer": "unwavering loyalty",
+          "method_answer": "great making command",
+          "compressed_text": "Genghis Khan put absolute generals, such Muqali, Jebe and Subutai, regarded close advisors, extending privileges trust normally close embarked far Mongol Empire capital Karakorum. Muqali, lieutenant, Mongol Jin Genghis Khan Central Asia, Subutai Jebe Great Raid Caucasus Kievan Rus', presented Khagan on granting great making command Genghis Khan expected unwavering them.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "This causes the rock unit as a whole to become longer and thinner. ",
+          "gold": "Extension",
+          "original_answer": "Extension",
+          "method_answer": "ductile stretching thinning",
+          "compressed_text": "Extension causes rock units as longer primarily accomplished normal faulting through ductile stretching thinning. Normal drop rock below typically younger units Stretching units their thinning; location Maria Fold Thrust Belt entire sedimentary sequence Grand Canyon over Rocks depth to ductilely metamorphosed. stretched pinch lenses, known boudins, after French word \"sausage\", visual",
+          "score_drop": 1.0
+        }
+      ]
+    },
+    "random_drop_aggressive": {
+      "family": "random_drop",
+      "tokens_saved_pct": 55.82,
+      "score": 0.4239,
+      "exact_match": 0.22,
+      "quality_retained": 0.4758,
+      "quality_retained_ci95": [
+        0.3552,
+        0.6095
+      ],
+      "examples_hurt": 35,
+      "worst_examples": [
+        {
+          "question": "What kind of organism is Cyanophora?",
+          "gold": "alga",
+          "original_answer": "glaucophyte",
+          "method_answer": "thylakoids",
+          "compressed_text": "a to one of the chloroplast. glaucophyte is of the primary lineages, being found 13 and is thought to be one earliest. chloroplasts retain their their parent. For reason, also known Glaucophyte also contain unstacked a an structure glaucophyte cyanobacteria fixation enzyme rubisco The starch they the Like glaucophyte thylakoids studded collecting called glaucophyte and chloroplasts algae plants.",
+          "score_drop": 1.0
+        },
+        {
+          "question": "What cycle AC current system did Tesla propose?",
+          "gold": "60-cycle",
+          "original_answer": "60",
+          "method_answer": "induction motor",
+          "compressed_text": "During to create system the streetcars. found the there of conflicts between him and other Westinghouse engineers over how AC Between them, they settled current match frequency Tesla's that, since Tesla's induction motor only not work street traction",
+          "score_drop": 1.0
+        },
+        {
+          "question": "Who did the Dutch fight in the Dutch Revolt?",
+          "gold": "Spain",
+          "original_answer": "Spain",
+          "method_answer": "Spanish rule",
+          "compressed_text": "alongside the Spain years Dutch Revolt rapidly destination for in \"Apologie\" Silent, Inquisition, written minister, Pierre of Louise de of the Huguenot Gaspard William the leader of the revolt Spanish rule. As both spoke their church in held French. The has present The Prinsenhof is one the churches of Dutch Reformed Church. ties and Dutch political the the of Dutch many settlements settled the Cape Hope in South Africa and New in North America.",
+          "score_drop": 1.0
+        }
+      ]
+    }
+  }
+}
